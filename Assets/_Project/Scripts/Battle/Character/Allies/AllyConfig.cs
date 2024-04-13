@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.Battle.Character
+namespace Game.Battle.Character.Allies
 {
     [CreateAssetMenu]
     public class AllyConfig : ScriptableObject

@@ -5,7 +5,11 @@ namespace Game.Battle.Character
 {
 	public class CharacterModel
 	{
+		public CharacterStateMachine StateMachine { get; set; }
+		public CharacterView View { get; set; }
+
 		public ReactiveCommand OnDie = new();
+		public ReactiveCommand OnTakeDamage = new();
 
 		public IReadOnlyReactiveProperty<int> Health => _health;
 		public int MaxHealth => _maxHealth;
@@ -18,7 +22,7 @@ namespace Game.Battle.Character
 		private int _damage;
 		private float _attackSpeed;
 
-		public CharacterModel(int health, int damage, int attackSpeed)
+		public CharacterModel(int health, int damage, float attackSpeed)
 		{
 			_health = new ReactiveProperty<int>(health);
 			_maxHealth = health;
@@ -29,6 +33,7 @@ namespace Game.Battle.Character
 		public void TakeDamage(int damage)
 		{
 			_health.Value = Mathf.Max(0, _health.Value - damage);
+			OnTakeDamage.Execute();
 			if (_health.Value <= 0)
 				OnDie.Execute();
 		}
