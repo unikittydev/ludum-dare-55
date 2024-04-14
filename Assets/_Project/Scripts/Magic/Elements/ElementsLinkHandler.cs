@@ -193,7 +193,7 @@ namespace Game.Magic.Elements
 
 			toDestroy.Arrow1.View.gameObject.SetActive(true);
 			toDestroy.Arrow2.View.gameObject.SetActive(true);
-			Object.Destroy(_lines[toDestroy]);
+			Object.Destroy(_lines[toDestroy].gameObject);
 			_lines.Remove(toDestroy);
 		}
 	}
