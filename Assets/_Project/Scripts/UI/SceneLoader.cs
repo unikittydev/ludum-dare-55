@@ -11,9 +11,8 @@ namespace Game.UI
 
         [SerializeField] private float _fadeDuration = 3f;
 
-        [SerializeField] private GameObject mainMenu;
-        [SerializeField] private SettingsView settingsView;
-
+        [SerializeField] private PanelAnimationView _setingsAnimationView;
+        
         [SerializeField] private int gameBuildIndex;
         
         private Tween _tween;
@@ -25,24 +24,12 @@ namespace Game.UI
             FadeOutMask();
         }
 
-        public void LoadGame()
+        public void RestartGame()
         {
             DOTween.Sequence()
+                .Append(_setingsAnimationView.HidePanel())
                 .Append(FadeInMask())
-                .AppendCallback(() => mainMenu.SetActive(false))
-                .AppendCallback(() => settingsView.SetInGame(true))
-                .Append(FadeOutMask())
-                .SetUpdate(true);
-        }
-        
-        public void LoadMenu()
-        {
-            DOTween.Sequence()
-                .Append(settingsView.HidePanel())
-                .Append(FadeInMask())
-                .AppendCallback(() => settingsView.SetInGame(false))
-                .AppendCallback(() => mainMenu.SetActive(true))
-                .Append(FadeOutMask())
+                .AppendCallback(() => SceneManager.LoadScene(gameBuildIndex))
                 .SetUpdate(true);
         }
 

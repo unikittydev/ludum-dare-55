@@ -27,7 +27,6 @@ namespace Game.Magic
         [SerializeField] private float _emissionFadeDuration = .1f;
         [SerializeField] private float _emissionDuration = .5f;
         [SerializeField] private float _dissolveDuration = .5f;
-        [SerializeField] private float _respawnDelay = 2f;
 
         [Inject] private MagicCircleFactory _factory;
         [Inject] private SummonProvider _provider;

@@ -21,7 +21,7 @@ namespace Game.Scoring
 		[Inject] private SummonProvider _summon;
 		[Inject] private Battleground _battle;
 
-		private CompositeDisposable _disposables;
+		private CompositeDisposable _disposables = new();
 
 		public void Initialize()
 		{
