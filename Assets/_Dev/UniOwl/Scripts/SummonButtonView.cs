@@ -49,9 +49,10 @@ namespace Game.Magic
         private void OnDisable()
         {
             lockValueChanged.Dispose();
-        }
+			_transitionTween?.Kill();
+		}
 
-        private void OnLockedValueChanged(bool locked)
+		private void OnLockedValueChanged(bool locked)
         {
             if (locked)
                 DoTransition(_disabledState);

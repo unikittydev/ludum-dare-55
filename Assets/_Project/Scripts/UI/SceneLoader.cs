@@ -19,6 +19,7 @@ namespace Game.UI
         [SerializeField] private int gameBuildIndex;
         
         private Tween _tween;
+        private Tween _secondTween;
 
         private void Start()
         {
@@ -26,12 +27,17 @@ namespace Game.UI
             _mask.anchoredPosition = new Vector2(Screen.width, Screen.height) * .5f;
             FadeOutMask();
         }
+		private void OnDisable()
+		{
+            _tween?.Kill();
+            _secondTween?.Kill();
+		}
 
-        public void RestartGame()
+		public void RestartGame()
         {
             var panel = _setingsAnimationView.Visible ? _setingsAnimationView : _leaderboardAnimationView;
-            
-            DOTween.Sequence()
+
+			_secondTween = DOTween.Sequence()
                 .Append(panel.HidePanel())
                 .Append(FadeInMask())
                 .AppendCallback(() => SceneManager.LoadScene(gameBuildIndex))

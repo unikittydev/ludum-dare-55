@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Game.Configs;
 using System;
+using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -19,6 +20,7 @@ namespace Game.Magic.Elements
 		private float _currentTime;
 		private MagicElementView[] _elements;
 		private IDisposable[] _disposables;
+		private List<Tween> _spawnTweens = new();
 
 		private void Awake() 
 		{
@@ -38,6 +40,9 @@ namespace Game.Magic.Elements
 			if (_disposables != null)
 				foreach (var d in _disposables)
 					d?.Dispose();
+			foreach (var t in _spawnTweens)
+				t?.Kill();
+			_spawnTweens.Clear();
 		}
 
 		private void Spawn()
@@ -53,7 +58,7 @@ namespace Game.Magic.Elements
 
 				_elements[i] = _factory.Create();
 				_elements[i].transform.position = spawnPoint;
-				_elements[i].transform.DOMove(movePoint, 0.3f);
+				_spawnTweens.Add(_elements[i].transform.DOMove(movePoint, 0.3f));
 				_disposables[i] = _elements[i].Model.InCircle.Subscribe((b) =>
 				{
 					if (b)

@@ -33,10 +33,13 @@ namespace Game.Magic
 		[Inject] private ElementRotationHandler _rotation;
 		[Inject] private MagicCircleFactory _circleFactory;
 
+        private Tween _tween;
+
 		private void OnDisable()
         {
             UpdateEmissionColor(_fromEmission);
             UpdateDissolveFactor(0f);
+            _tween?.Kill();
         }
         
         public void Summon()
@@ -44,7 +47,7 @@ namespace Game.Magic
             _psSummon.Play();
             _lineAnimator.Play(PLAY);
 
-            DOTween.Sequence()
+            _tween = DOTween.Sequence()
                 .AppendCallback(_drag.Disable)
                 .AppendCallback(_rotation.Disable)
                 .AppendCallback(() =>

@@ -23,7 +23,12 @@ namespace Game.UI
             _innerPanel.anchoredPosition = new Vector2(0f, -100f);
         }
 
-        public Sequence ShowPanel()
+		private void OnDisable()
+		{
+            _tween?.Kill();
+		}
+
+		public Sequence ShowPanel()
         {
             _tween?.Kill();
             _outerPanel.gameObject.SetActive(true);
