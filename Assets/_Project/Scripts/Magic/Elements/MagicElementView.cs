@@ -2,11 +2,12 @@ using Game.Configs;
 using Game.MathUtils;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Game.Magic.Elements
 {
-	public class MagicElementView : MonoBehaviour
+	public class MagicElementView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
 		public MagicElementModel Model => _model;
 		public SpriteRenderer SpriteRenderer => _spriteRenderer;
@@ -16,6 +17,8 @@ namespace Game.Magic.Elements
 		[SerializeField] private SpriteRenderer _spriteRenderer;
 		[SerializeField] private Material _initialMaterial;
 		[SerializeField] private Material _inCircleMaterial;
+		[SerializeField] private ElementTooltip _tooltip;
+		[SerializeField] private GameObject _tooltipObj;
 
 		[Inject] private MagicCircleConfig _config;
 		[Inject] private MagicElementModel _model;
@@ -25,6 +28,7 @@ namespace Game.Magic.Elements
 		[Inject]
 		private void Construct()
 		{
+			_tooltip.Set(_model);
 			_spriteRenderer.sprite = _model.Config.RuneSprite;
 			_spriteRenderer.material = _initialMaterial;
 		}
@@ -53,5 +57,10 @@ namespace Game.Magic.Elements
 				transform.eulerAngles = Vector3.forward * _model.Rotation.Value;
 			}
 		}
+
+		public void OnPointerEnter(PointerEventData eventData) =>
+			_tooltipObj.SetActive(true);
+		public void OnPointerExit(PointerEventData eventData) =>
+			_tooltipObj?.SetActive(false);
 	}
 }
