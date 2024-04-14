@@ -30,7 +30,6 @@ namespace Game.UI
             DOTween.Sequence()
                 .Append(FadeInMask())
                 .AppendCallback(() => mainMenu.SetActive(false))
-                .AppendCallback(() => SceneManager.LoadScene(gameBuildIndex, LoadSceneMode.Additive))
                 .AppendCallback(() => settingsView.SetInGame(true))
                 .Append(FadeOutMask())
                 .SetUpdate(true);
@@ -41,7 +40,6 @@ namespace Game.UI
             DOTween.Sequence()
                 .Append(settingsView.HidePanel())
                 .Append(FadeInMask())
-                .AppendCallback(() => SceneManager.UnloadSceneAsync(gameBuildIndex))
                 .AppendCallback(() => settingsView.SetInGame(false))
                 .AppendCallback(() => mainMenu.SetActive(true))
                 .Append(FadeOutMask())
