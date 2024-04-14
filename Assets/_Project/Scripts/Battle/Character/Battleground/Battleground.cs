@@ -100,7 +100,6 @@ namespace Game.Battle
 			}
 			else if (character == right)
 			{
-				_rightSide.Dequeue();
 				OnRightSideKilled.Execute(_rightSide.Dequeue());
 				MoveSide(_rightSide.ToArray(), false);
 				if (hasLeft)
