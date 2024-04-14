@@ -12,6 +12,7 @@ namespace Game.Battle.Character.Enemies
         public float AttackSpeedMultiplier => _attackSpeedMultiplier;
 
         public AnimationCurve SpawnFrequencyCurve => _spawnFrequencyCurve;
+        public AnimationCurve ScoreByKillCurve => _scoreByKillCurve;
 
         [SerializeField] private CharacterView _prefab;
         [Space]
@@ -19,6 +20,7 @@ namespace Game.Battle.Character.Enemies
         [SerializeField] private float _damageMultiplier;
         [SerializeField] private float _attackSpeedMultiplier;
         [Space]
+        [SerializeField] private AnimationCurve _scoreByKillCurve;
         [SerializeField] private AnimationCurve _spawnFrequencyCurve;
     }
 }

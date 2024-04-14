@@ -5,6 +5,8 @@ namespace Game.Battle.Character
 {
 	public class CharacterModel
 	{
+		public int ScoreByKill = 0;
+
 		public CharacterStateMachine StateMachine { get; set; }
 		public CharacterView View { get; set; }
 
