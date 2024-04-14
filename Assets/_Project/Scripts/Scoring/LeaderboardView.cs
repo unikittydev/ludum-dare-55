@@ -61,7 +61,7 @@ namespace Game.Scoring
 		private void Initialize(List<LeaderboardEntry> entries)
 		{
 			_loaded = true;
-			_myEntry = new LeaderboardEntry("", "", 1, _score.Score.Value);
+			_myEntry = new LeaderboardEntry("", _nameField.text, 0, _score.Score.Value);
 			entries.Add(_myEntry);
 			
 			var sorted = entries.OrderByDescending(e => e.Score).ToArray();
@@ -86,7 +86,7 @@ namespace Game.Scoring
                 }
 
 				_names[i].text = (i + 1).ToString() + ". " + entry.PlayerName;
-				_scores[i].text = entry.Score.ToString("0") + " pt";
+				_scores[i].text = entry.Score.ToString("0");
             }
 
 			if (!myFinded)
@@ -97,7 +97,7 @@ namespace Game.Scoring
 				_names[^1].color = _myTextColor;
 				_scores[^1].color = _myTextColor;
 				_names[^1].text = _myEntryPlace + ". " + _nameField.text;
-				_scores[^1].text = _myEntry.Score.ToString("0") + " pt";
+				_scores[^1].text = _myEntry.Score.ToString("0");
 
 				_names[^2].text = "...";
 				_scores[^2].text = "...";
