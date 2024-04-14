@@ -3,8 +3,6 @@ using TMPro;
 using UnityEngine;
 using Zenject;
 using UniRx;
-using Unity.Services.Leaderboards.Models;
-using System;
 using System.Linq;
 using UnityEngine.UI;
 using Game.UI;
@@ -26,14 +24,14 @@ namespace Game.Scoring
 		[Space]
 		[SerializeField] private SceneLoader _forRestart;
 
-		private LeaderboardEntry _myEntry;
+		private Dan.Models.Entry _myEntry;
 		private int _myEntryIndex;
 		private int _myEntryPlace;
 
 		private CompositeDisposable _disposable;
 		private bool _loaded;
 
-		private async void OnEnable()
+		private void OnEnable()
 		{
 			_disposable = new CompositeDisposable();
 			_loaded = false;
@@ -51,17 +49,16 @@ namespace Game.Scoring
 				.Subscribe(OnNameChanged)
 				.AddTo(_disposable);
 
-			var list = await _leaderboard.GetScores();
-			Initialize(list);
+			_leaderboard.GetScores(r => Initialize(r.ToList()));
 		}
 
 		private void OnDisable() =>
 			_disposable.Dispose();
 		
-		private void Initialize(List<LeaderboardEntry> entries)
+		private void Initialize(List<Dan.Models.Entry> entries)
 		{
 			_loaded = true;
-			_myEntry = new LeaderboardEntry("", _nameField.text, 0, _score.Score.Value);
+			_myEntry = new Dan.Models.Entry() { Score = _score.Score.Value, Username = "" };
 			entries.Add(_myEntry);
 			
 			var sorted = entries.OrderByDescending(e => e.Score).ToArray();
@@ -71,7 +68,7 @@ namespace Game.Scoring
 			for (int i = 0; i < len; i++)
 			{
 				var entry = sorted[i];
-				if (entry == _myEntry)
+				if (entry.Username == "")
 				{
 					myFinded = true;
 					_names[i].color = _myTextColor;
@@ -85,7 +82,7 @@ namespace Game.Scoring
 					_scores[i].color = _defaultTextColor;
                 }
 
-				_names[i].text = (i + 1).ToString() + ". " + entry.PlayerName;
+				_names[i].text = (i + 1).ToString() + ". " + entry.Username;
 				_scores[i].text = entry.Score.ToString("0");
             }
 
@@ -111,7 +108,7 @@ namespace Game.Scoring
 			if (_nameField.text.Length < 3)
 				return;
 
-			_score.SubmitScore(_nameField.text);
+			_leaderboard.AddScore(_score.Score.Value, _nameField.text);
 			_forRestart.RestartGame();
 		}
 

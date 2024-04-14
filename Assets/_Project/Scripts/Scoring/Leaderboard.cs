@@ -1,61 +1,19 @@
-using Unity.Services.Authentication;
-using Unity.Services.Core;
-using Zenject;
 using UniRx;
-using UnityEngine;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Unity.Services.Leaderboards;
-using Newtonsoft.Json;
-using Unity.Services.Leaderboards.Models;
-using UnityEditor.VersionControl;
-using TMPro;
+using Dan.Main;
 
 namespace Game.Scoring
 {
-	public class Leaderboard : IInitializable
+	public class Leaderboard
 	{
 		public ReactiveProperty<bool> Signed = new();
 
-		private const string ID = "GameLD";
-		
-		async void IInitializable.Initialize()
-		{
-			if (UnityServices.State == ServicesInitializationState.Initialized)
-				AuthenticationService.Instance.SignOut();
-			else
-				await UnityServices.InitializeAsync();
+		private const string PUBLIC_KEY = "0a2ea4fd08e29aff08e8b171c85780b199756c8fc0625326f9767d2ceec5fd9f";
+		private const string PRIVATE_KEY = "3dc5a74590aff85a555d1fa560db130e40171e5f905c53e1458823bdded32bca7ff9bac66e291f0497d1e12962243190478c64e225d02c5b947dd98c4cc4480f1c736a986afde7bf0d49d66690ae577848d8ff5b84882f836cc1640c1d0d0881529b71d04b7b688a725f56c80c81be004c438fbc0c1c9db7eec3556935ad8403";
 
-			AuthenticationService.Instance.SignedIn += () =>
-			{
-				Debug.Log("Signed: " + AuthenticationService.Instance.PlayerId);
-				Signed.Value = true;
-			};
-			AuthenticationService.Instance.SignInFailed += s => 
-				Debug.Log(s);
-
-			await AuthenticationService.Instance.SignInAnonymouslyAsync(new SignInOptions() { CreateAccount = true });
-		}
-
-		public async void AddScore(int score)
-		{
-			var response = await LeaderboardsService.Instance.AddPlayerScoreAsync(ID, score);
-			Debug.Log(JsonConvert.SerializeObject(response));
-		}
-
-		public async Task<List<LeaderboardEntry>> GetScores()
-		{
-			var scoresResponse =
-				await LeaderboardsService.Instance.GetScoresAsync(ID);
-			return scoresResponse.Results;
-		}
-
-		public async void GetPlayerScore()
-		{
-			var scoreResponse =
-				await LeaderboardsService.Instance.GetPlayerScoreAsync(ID);
-			Debug.Log(JsonConvert.SerializeObject(scoreResponse));
-		}
+		public void AddScore(int score, string name) =>
+			LeaderboardCreator.UploadNewEntry(PUBLIC_KEY, name, score);
+		public void GetScores(Action<Dan.Models.Entry[]> callback) =>
+			LeaderboardCreator.GetLeaderboard(PUBLIC_KEY, callback);
 	}
 }
