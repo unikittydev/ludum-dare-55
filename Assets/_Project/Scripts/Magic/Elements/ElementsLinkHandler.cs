@@ -3,7 +3,6 @@ using Game.MathUtils;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using Unity.Mathematics;
 using UnityEngine;
 using Zenject;
 using static Game.Magic.Model.MagicCircleOrbitModel;
@@ -37,6 +36,17 @@ namespace Game.Magic.Elements
 		{
 			_disposables?.Dispose();
 			_circleDisposable?.Dispose();
+		}
+
+		public IReadOnlyList<MagicElementModel> GetLinkedElements()
+		{
+			var result = new List<MagicElementModel>();
+			foreach (var link in _lines.Keys)
+			{
+				result.Add(link.Element1);
+				result.Add(link.Element2);
+			}
+			return result;
 		}
 
 		private void UpdateCircle(MagicCircleFacade circle)

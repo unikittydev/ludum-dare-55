@@ -1,19 +1,40 @@
+using Game.Battle.Character.Enemies;
 using Game.Magic.Elements;
 using Game.MathUtils;
 using Game.Scoring;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
+using static Game.Configs.EnemiesConfig;
 
 namespace Game.Configs
 {
 	public class GameDifficultyService
 	{
+		public IReadOnlyList<Condition> ConditionalEnemies => _enemiesConfig.ConditionalEnemies;
+
 		[Inject] private EnemiesConfig _enemiesConfig;
 		[Inject] private ElementsConfig _elementsConfig;
 		[Inject] private MagicCircleConfig _magicCircleConfig;
 		[Inject] private AlliesConfig _alliesConfig;
 		[Inject] private ScoreService _score;
+
+		public EnemyConfig GetRandomEnemy()
+		{
+			var enemies = _enemiesConfig.Enemies;
+			var allChances = enemies.Sum(e => e.SpawnFrequencyCurve.Evaluate(_score.Score.Value));
+			var r = Random.Range(0, allChances);
+			var cumulate = 0f;
+			foreach (var e in enemies)
+			{
+				var ch = e.SpawnFrequencyCurve.Evaluate(_score.Score.Value);
+				cumulate += ch;
+				if (r <= cumulate)
+					return e;
+			}
+			return enemies[0];
+		}
 
 		public MagicElementConfig GetRandomRune() =>
 			_elementsConfig.Elements[Random.Range(0, _elementsConfig.Elements.Count)];
