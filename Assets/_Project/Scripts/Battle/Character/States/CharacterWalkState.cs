@@ -20,6 +20,7 @@ namespace Game.Battle.Character.States
 			var duration = distance / _stateMachine.Model.View.MoveSpeed;
 			_tween = _stateMachine.Model.View.transform.DOMove(_point, duration)
 				.OnComplete(() => _stateMachine.SwitchState(new CharacterReadyState(_stateMachine)));
+			Debug.Log("Walk");
 		}
 
 		public override void Exit()

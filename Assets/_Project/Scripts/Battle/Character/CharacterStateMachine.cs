@@ -23,6 +23,9 @@ namespace Game.Battle.Character
 				.AddTo(this);
 		}
 
+		private void OnDisable() =>
+			_currentState.Value?.Exit();
+
 		public void SwitchState(CharacterState state)
 		{
 			_currentState.Value?.Exit();
