@@ -23,8 +23,9 @@ namespace Game.Scoring
 		async void IInitializable.Initialize()
 		{
 			if (UnityServices.State == ServicesInitializationState.Initialized)
-				return;
-			await UnityServices.InitializeAsync();
+				AuthenticationService.Instance.SignOut();
+			else
+				await UnityServices.InitializeAsync();
 
 			AuthenticationService.Instance.SignedIn += () =>
 			{
@@ -34,7 +35,7 @@ namespace Game.Scoring
 			AuthenticationService.Instance.SignInFailed += s => 
 				Debug.Log(s);
 
-			await AuthenticationService.Instance.SignInAnonymouslyAsync();
+			await AuthenticationService.Instance.SignInAnonymouslyAsync(new SignInOptions() { CreateAccount = true });
 		}
 
 		public async void AddScore(int score)
