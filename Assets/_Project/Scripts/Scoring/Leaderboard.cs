@@ -10,6 +10,7 @@ using Unity.Services.Leaderboards;
 using Newtonsoft.Json;
 using Unity.Services.Leaderboards.Models;
 using UnityEditor.VersionControl;
+using TMPro;
 
 namespace Game.Scoring
 {
