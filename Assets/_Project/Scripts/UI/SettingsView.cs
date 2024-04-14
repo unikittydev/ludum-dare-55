@@ -5,38 +5,38 @@ namespace Game.UI
 {
     public class SettingsView : MonoBehaviour
     {
-        private bool paused;
+        private bool _paused;
         
         [SerializeField]
-        private bool inGame = true;
+        private bool _inGame = true;
 
         [SerializeField] private GameObject mainMenuButtons, gameMenuButtons;
 
         [SerializeField] private PanelAnimationView _panelAnimationView;
-
+        
         private void Awake()
         {
-            SetInGame(inGame);
+            SetInGame(_inGame);
         }
 
         public void SetInGame(bool value)
         {
-            inGame = value;
+            _inGame = value;
 
-            if (!inGame)
+            if (!_inGame)
             {
                 Time.timeScale = 1f;
-                paused = false;
+                _paused = false;
             }
-            mainMenuButtons.SetActive(!inGame);
-            gameMenuButtons.SetActive(inGame);
+            mainMenuButtons.SetActive(!_inGame);
+            gameMenuButtons.SetActive(_inGame);
         }
 
         private void Update()
         {
-            if (!Input.GetKeyDown(KeyCode.Escape) || !inGame) return;
+            if (!Input.GetKeyDown(KeyCode.Escape) || !_inGame) return;
             
-            if (!paused)
+            if (!_paused)
                 Pause();
             else
                 Resume();
@@ -44,8 +44,8 @@ namespace Game.UI
 
         public void PauseWithoutMenu()
         {
-            if (!inGame) return;
-            paused = true;
+            if (!_inGame) return;
+            _paused = true;
             Time.timeScale = 0f;
         }
         
@@ -57,12 +57,12 @@ namespace Game.UI
 
         public void Resume()
         {
-            if (inGame)
-                paused = false;
+            if (_inGame)
+                _paused = false;
             
             _panelAnimationView.HidePanel().AppendCallback(() =>
             {
-                if (inGame)
+                if (_inGame)
                     Time.timeScale = 1f;
             });
         }

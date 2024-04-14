@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 
@@ -15,6 +14,9 @@ namespace Game.UI
 
         private Tween _tween;
 
+        private bool _visible;
+        public bool Visible => _visible;
+        
         private void Awake()
         {
             _innerPanel.pivot = new Vector2(0.5f, 1f);
@@ -27,7 +29,11 @@ namespace Game.UI
             _outerPanel.gameObject.SetActive(true);
 
             var seq = DOTween.Sequence().Append(_innerPanel.DOPivot(new Vector2(0.5f, 0f), _moveSpeed))
-                .Join(_innerPanel.DOMoveY(100f, _moveSpeed)).AppendCallback(() => _raycastOverlay.SetActive(false))
+                .Join(_innerPanel.DOMoveY(100f, _moveSpeed)).AppendCallback(() =>
+                {
+                    _raycastOverlay.SetActive(false);
+                    _visible = true;
+                })
                 .SetUpdate(true);
             _tween = seq;
 
@@ -43,6 +49,7 @@ namespace Game.UI
                 {
                     _outerPanel.gameObject.SetActive(false);
                     _raycastOverlay.SetActive(true);
+                    _visible = false;
                 }).SetUpdate(true);
             _tween = seq;
 

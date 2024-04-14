@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,8 @@ namespace Game.UI
         [SerializeField] private float _fadeDuration = 3f;
 
         [SerializeField] private PanelAnimationView _setingsAnimationView;
+        [SerializeField] private PanelAnimationView _leaderboardAnimationView;
+        [SerializeField] private SettingsView _settingsView;
         
         [SerializeField] private int gameBuildIndex;
         
@@ -26,7 +29,10 @@ namespace Game.UI
 
         public void RestartGame()
         {
+            var panel = _setingsAnimationView.Visible ? _setingsAnimationView : _leaderboardAnimationView;
+            
             DOTween.Sequence()
+                .Append(panel.HidePanel())
                 .Append(FadeInMask())
                 .AppendCallback(() => SceneManager.LoadScene(gameBuildIndex))
                 .AppendCallback(() => Time.timeScale = 1f)
