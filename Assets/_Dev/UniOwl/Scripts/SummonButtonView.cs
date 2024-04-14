@@ -1,7 +1,9 @@
+using System;
 using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Game.Magic
 {
@@ -13,12 +15,12 @@ namespace Game.Magic
         [SerializeField] private SpriteRenderer _outerCircle;
         [SerializeField] private SpriteRenderer _hand;
 
-        [SerializeField] private ParticleSystem _psSummon;
-
-
+        [SerializeField] private SummonAnimationSequenceView animationSequenceView;
+        
         [SerializeField] private SummonButtonState _defaultState;
         [SerializeField] private SummonButtonState _hoverState;
         [SerializeField] private SummonButtonState _clickedState;
+        [SerializeField] private SummonButtonState _disabledState;
 
         [SerializeField] private float _transitionTime;
         
@@ -26,6 +28,8 @@ namespace Game.Magic
 
         private bool pointerOver;
 
+        private IDisposable lockValueChanged;
+        
 		private void Start()
         {
             _innerCircle.transform.localScale = Vector3.one * _defaultState._innerScale;
@@ -34,43 +38,58 @@ namespace Game.Magic
             _innerCircle.color = _defaultState._innerTint;
             _outerCircle.color = _defaultState._outerTint;
             _hand.color = _defaultState._handTint;
+            
+        }
+
+        private void OnEnable()
+        {
+            lockValueChanged = Lock.Subscribe(OnLockedValueChanged);
+        }
+
+        private void OnDisable()
+        {
+            lockValueChanged.Dispose();
+        }
+
+        private void OnLockedValueChanged(bool locked)
+        {
+            if (locked)
+                DoTransition(_disabledState);
+            else
+                DoTransition(pointerOver ? _hoverState : _defaultState);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (Lock.Value) return;
             pointerOver = true;
+            if (Lock.Value) return;
             DoTransition(_hoverState);
-            Debug.Log("Enter");
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (Lock.Value) return;
             pointerOver = false;
+            if (Lock.Value) return;
             DoTransition(_defaultState);
-            Debug.Log("Exit");
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if (Lock.Value) return;
             DoTransition(_clickedState);
-            Debug.Log("Down");
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             if (Lock.Value) return;
             DoTransition(pointerOver ? _hoverState : _defaultState);
-            Debug.Log("Up");
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (Lock.Value) return;
-            _psSummon.Play();
-			Debug.Log("Click");
+            
+            animationSequenceView.Summon();
         }
 
         private void DoTransition(SummonButtonState state)
@@ -87,5 +106,4 @@ namespace Game.Magic
                     .Join(_hand.DOColor(state._handTint, _transitionTime));
         }
     }
-
 }

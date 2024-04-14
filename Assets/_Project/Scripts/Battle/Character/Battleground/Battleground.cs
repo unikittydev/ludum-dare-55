@@ -17,6 +17,7 @@ namespace Game.Battle
 		[SerializeField] private float _distanceBetweenSides;
 		[SerializeField] private float _characterWidth;
 		[SerializeField] private float _spawnHeight;
+		[SerializeField] private float _spawnDuration = 0.2f;
 
 		private Queue<CharacterModel> _leftSide = new();
 		private Queue<CharacterModel> _rightSide = new();
@@ -53,8 +54,8 @@ namespace Game.Battle
 			spawnPoint.y += _spawnHeight;
 			
 			character.View.transform.position = spawnPoint;
-			character.View.transform.DOMoveY(_battlePoint.position.y, 0.2f);
-			await Task.Delay(System.TimeSpan.FromSeconds(0.2f));
+			character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration);
+			await Task.Delay(System.TimeSpan.FromSeconds(_spawnDuration));
 			
 			character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint));
 		}

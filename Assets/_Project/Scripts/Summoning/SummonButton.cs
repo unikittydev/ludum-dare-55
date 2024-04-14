@@ -11,7 +11,6 @@ namespace Game.Summoning
 		[SerializeField] private SummonButtonView _view;
 		[SerializeField] private Image _cooldownImage;
 		[SerializeField] private float _cooldownDuration;
-		[Inject] private SummonProvider _provider;
 
 		private float _cooldownTime;
 
@@ -20,7 +19,6 @@ namespace Game.Summoning
 			if (_cooldownTime > 0)
 				return;
 			_cooldownTime = _cooldownDuration;
-			_provider.Summon();
 		}
 
 		private void Update()

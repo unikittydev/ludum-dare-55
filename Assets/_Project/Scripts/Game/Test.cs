@@ -26,4 +26,9 @@ public class Test : MonoBehaviour
 			_elementsFactory.Create();
 		}
 	}
+
+	public void Spawn()
+	{
+		_factory.CreateNew();
+	}
 }
