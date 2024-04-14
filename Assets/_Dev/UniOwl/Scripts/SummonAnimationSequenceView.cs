@@ -33,6 +33,7 @@ namespace Game.Magic
         [Inject] private SummonProvider _provider;
 		[Inject] private ElementDragHandler _drag;
 		[Inject] private ElementRotationHandler _rotation;
+		[Inject] private MagicCircleFactory _circleFactory;
 
 		private void OnDisable()
         {
@@ -48,6 +49,14 @@ namespace Game.Magic
             DOTween.Sequence()
                 .AppendCallback(_drag.Disable)
                 .AppendCallback(_rotation.Disable)
+                .AppendCallback(() =>
+                {
+					foreach (var or in _circleFactory.CurrentCircle.Value.Model.Orbits)
+						foreach (var sl in or.Slots)
+							if (sl.Element.Value != null)
+								foreach (var ar in sl.Element.Value.Arrows)
+									ar.View.gameObject.SetActive(false);
+				})
                 .AppendInterval(_delay)
                 .Append(DOVirtual.Color(_fromEmission, _toEmission, _emissionFadeDuration, UpdateEmissionColor))
                 .JoinCallback(_provider.Summon)

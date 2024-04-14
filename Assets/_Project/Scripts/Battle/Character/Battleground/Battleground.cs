@@ -22,6 +22,15 @@ namespace Game.Battle
 		private Queue<CharacterModel> _leftSide = new();
 		private Queue<CharacterModel> _rightSide = new();
 
+		private List<Tween> _spawnTweens = new();
+
+		private void OnDisable()
+		{
+			foreach (var t in _spawnTweens)
+				t?.Kill();
+			_spawnTweens.Clear();
+		}
+
 		public void SendLeftSide(CharacterModel character)
 		{
 			Spawn(character, true);
@@ -34,7 +43,7 @@ namespace Game.Battle
 			RegisterCharacter(character);
 		}
 
-		private async void Spawn(CharacterModel character, bool left)
+		private void Spawn(CharacterModel character, bool left)
 		{
 			Vector2 spawnPoint;
 			Vector2 walkPoint;
@@ -55,9 +64,9 @@ namespace Game.Battle
 			
 			character.View.transform.position = spawnPoint;
 			character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration);
-			await Task.Delay(System.TimeSpan.FromSeconds(_spawnDuration));
-			
-			character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint));
+			_spawnTweens.Add(DOTween.Sequence()
+				.AppendInterval(_spawnDuration)
+				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
 		}
 
 		private void RegisterCharacter(CharacterModel character)
