@@ -13,13 +13,19 @@ namespace Game.UI
         [SerializeField] private GameObject mainMenuButtons, gameMenuButtons;
 
         [SerializeField] private PanelAnimationView _panelAnimationView;
-        
+
+        private Tween _tween;
+
         private void Awake()
         {
             SetInGame(_inGame);
         }
+		private void OnDisable()
+		{
+            _tween?.Kill();
+		}
 
-        public void SetInGame(bool value)
+		public void SetInGame(bool value)
         {
             _inGame = value;
 
@@ -52,15 +58,16 @@ namespace Game.UI
         {
             if (!_inGame) return;
             PauseWithoutMenu();
-            _panelAnimationView.ShowPanel();
-        }
+            _tween?.Kill();
+			_tween = _panelAnimationView.ShowPanel();
+		}
 
         public void Resume()
         {
             if (_inGame)
                 _paused = false;
-            
-            _panelAnimationView.HidePanel().AppendCallback(() =>
+            _tween?.Kill();
+            _tween = _panelAnimationView.HidePanel().AppendCallback(() =>
             {
                 if (_inGame)
                     Time.timeScale = 1f;
