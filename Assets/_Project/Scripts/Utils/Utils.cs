@@ -6,8 +6,12 @@ namespace Game.MathUtils
 {
     public static class Utils 
     {
-        public static Vector2 GetRotated(this Vector2 vector, float degrees) =>
-            Quaternion.Euler(0, 0, -degrees) * vector;
+        public static Vector2 GetRotated(this Vector2 vector, float degrees)
+		{
+			if (vector.magnitude >= 0.99 && vector.magnitude <= 1.01f)
+				return (Quaternion.Euler(0, 0, -degrees) * vector).normalized;
+			return Quaternion.Euler(0, 0, -degrees) * vector;
+		}
 
 		public static Vector2 GetVector(int index, float degreesStep) =>
 			GetVector(index * degreesStep);

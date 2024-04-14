@@ -64,7 +64,8 @@ namespace Game.Magic.Elements
 					{
 						if (el == null) return;
 						CheckLinks(circle);
-						el.Rotation.Subscribe((r) => CheckLinks(circle));
+						el.Rotation.Subscribe((r) => CheckLinks(circle))
+							.AddTo(_disposables);
 					}).AddTo(_disposables);
 				}
 			}
