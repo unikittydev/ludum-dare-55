@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,7 +8,6 @@ using System;
 using System.Linq;
 using UnityEngine.UI;
 using Game.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Game.Scoring
 {
@@ -35,7 +33,7 @@ namespace Game.Scoring
 		private CompositeDisposable _disposable;
 		private bool _loaded;
 
-		private void OnEnable()
+		private async void OnEnable()
 		{
 			_disposable = new CompositeDisposable();
 			_loaded = false;
@@ -53,10 +51,8 @@ namespace Game.Scoring
 				.Subscribe(OnNameChanged)
 				.AddTo(_disposable);
 
-			_leaderboard
-				.GetScores()
-				.ToObservable().Subscribe(Initialize)
-				.AddTo(_disposable);
+			var list = await _leaderboard.GetScores();
+			Initialize(list);
 		}
 
 		private void OnDisable() =>
