@@ -1,16 +1,33 @@
+using Game.Magic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Game.Summoning
 {
 	public class SummonButton : MonoBehaviour, IPointerClickHandler
 	{
+		[SerializeField] private SummonButtonView _view;
+		[SerializeField] private Image _cooldownImage;
+		[SerializeField] private float _cooldownDuration;
 		[Inject] private SummonProvider _provider;
+
+		private float _cooldownTime;
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
+			_cooldownTime = _cooldownDuration;
 			_provider.Summon();
+		}
+
+		private void Update()
+		{
+			_cooldownTime -= Time.deltaTime;
+			_view.Lock = _cooldownTime >= 0;
+			_cooldownImage.gameObject.SetActive(_cooldownTime >= 0);
+			if (_cooldownTime > 0)
+				_cooldownImage.fillAmount = _cooldownTime / _cooldownDuration;
 		}
 	}
 }

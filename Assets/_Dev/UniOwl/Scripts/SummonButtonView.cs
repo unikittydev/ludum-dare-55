@@ -7,6 +7,8 @@ namespace Game.Magic
 {
     public class SummonButtonView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
+        public bool Lock { get; set; } = false;
+
         [SerializeField] private SpriteRenderer _innerCircle;
         [SerializeField] private SpriteRenderer _outerCircle;
         [SerializeField] private SpriteRenderer _hand;
@@ -36,6 +38,7 @@ namespace Game.Magic
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (Lock) return;
             pointerOver = true;
             DoTransition(_hoverState);
             Debug.Log("Enter");
@@ -43,6 +46,7 @@ namespace Game.Magic
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (Lock) return;
             pointerOver = false;
             DoTransition(_defaultState);
             Debug.Log("Exit");
@@ -50,20 +54,23 @@ namespace Game.Magic
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (Lock) return;
             DoTransition(_clickedState);
             Debug.Log("Down");
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (Lock) return;
             DoTransition(pointerOver ? _hoverState : _defaultState);
             Debug.Log("Up");
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (Lock) return;
             _psSummon.Play();
-            Debug.Log("Click");
+			Debug.Log("Click");
         }
 
         private void DoTransition(SummonButtonState state)
