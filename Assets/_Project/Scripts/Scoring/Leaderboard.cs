@@ -40,8 +40,7 @@ namespace Game.Scoring
 
 		public async void AddScore(int score)
 		{
-			var response = await LeaderboardsService.Instance.AddPlayerScoreAsync(ID, score,
-				new AddPlayerScoreOptions() { VersionId = DateTime.Now.ToString() });
+			var response = await LeaderboardsService.Instance.AddPlayerScoreAsync(ID, score);
 			Debug.Log(JsonConvert.SerializeObject(response));
 		}
 

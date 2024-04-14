@@ -44,13 +44,13 @@ namespace Game.UI
 
         public void PauseWithoutMenu()
         {
-            if (!_inGame) return;
             _paused = true;
             Time.timeScale = 0f;
         }
         
         public void Pause()
         {
+            if (!_inGame) return;
             PauseWithoutMenu();
             _panelAnimationView.ShowPanel();
         }
