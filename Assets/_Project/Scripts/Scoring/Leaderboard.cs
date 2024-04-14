@@ -4,9 +4,12 @@ using Zenject;
 using UniRx;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.Services.Leaderboards;
 using Newtonsoft.Json;
 using Unity.Services.Leaderboards.Models;
+using UnityEditor.VersionControl;
 
 namespace Game.Scoring
 {
@@ -37,7 +40,7 @@ namespace Game.Scoring
 			Debug.Log(JsonConvert.SerializeObject(response));
 		}
 
-		public async LeaderboardEntry GetScores()
+		public async Task<List<LeaderboardEntry>> GetScores()
 		{
 			var scoresResponse =
 				await LeaderboardsService.Instance.GetScoresAsync(ID);

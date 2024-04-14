@@ -13,7 +13,7 @@ namespace Game.UI
         [SerializeField] private GameObject mainMenuButtons, gameMenuButtons;
 
         [SerializeField] private PanelAnimationView _panelAnimationView;
-        
+
         private void Awake()
         {
             SetInGame(inGame);
@@ -42,14 +42,16 @@ namespace Game.UI
                 Resume();
         }
 
+        public void PauseWithoutMenu()
+        {
+            if (!inGame) return;
+            paused = true;
+            Time.timeScale = 0f;
+        }
+        
         public void Pause()
         {
-            if (inGame)
-            {
-                paused = true;
-                Time.timeScale = 0f;
-            }
-            
+            PauseWithoutMenu();
             _panelAnimationView.ShowPanel();
         }
 

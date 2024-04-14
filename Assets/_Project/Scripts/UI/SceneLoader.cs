@@ -27,9 +27,9 @@ namespace Game.UI
         public void RestartGame()
         {
             DOTween.Sequence()
-                .Append(_setingsAnimationView.HidePanel())
                 .Append(FadeInMask())
                 .AppendCallback(() => SceneManager.LoadScene(gameBuildIndex))
+                .AppendCallback(() => Time.timeScale = 1f)
                 .SetUpdate(true);
         }
 
