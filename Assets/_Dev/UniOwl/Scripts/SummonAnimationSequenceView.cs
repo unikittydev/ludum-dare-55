@@ -16,21 +16,32 @@ namespace Game.Magic
         private static readonly int _THRESHOLD = Shader.PropertyToID("_Threshold");
         private static readonly int _CHANNELS_OFFSET = Shader.PropertyToID("_Channels_Offset");
         
+        [Header("Components")]
         [SerializeField] private ParticleSystem _psSummon;
         [SerializeField] private Animator _lineAnimator;
-
-        [SerializeField] private Material[] _materials;
+        
+        [Header("Aberration")]
         [SerializeField] private Material _ppAberrationMaterial;
+        [SerializeField] private Vector3 _aberrationOffset;
+        [SerializeField] private float _aberrationDuration = .25f;
+        
+        [Header("Camera Shaking")]
+        [SerializeField] private Transform _camera;
+        [SerializeField] private float _cameraShakeDuration = 1f;
+        [SerializeField] private float _cameraShakeStrength = 1f;
 
-        [SerializeField] private Vector3 _abberationOffset;
+        [Header("Delay")]
         [SerializeField] private float _delay = 2f;
         
+        [Header("Emission")]
+        [SerializeField] private Material[] _materials;
         [SerializeField, ColorUsage(false, true)] private Color _fromEmission;
         [SerializeField, ColorUsage(false, true)] private Color _toEmission;
         [SerializeField] private float _emissionFadeDuration = .1f;
         [SerializeField] private float _emissionDuration = .5f;
+        
+        [Header("Dissolve")]
         [SerializeField] private float _dissolveDuration = .5f;
-        [SerializeField] private float _aberrationDuration = .25f;
 
         [Inject] private MagicCircleFactory _factory;
         [Inject] private SummonProvider _provider;
@@ -49,11 +60,12 @@ namespace Game.Magic
         
         public void Summon()
         {
-            _psSummon.Play();
-            _lineAnimator.Play(PLAY);
-
             _tween = DOTween.Sequence()
+                // Camera shaking
+                .Join(_camera.DOShakePosition(_cameraShakeDuration, _cameraShakeStrength))
                 // Prepare
+                .JoinCallback(_psSummon.Play)
+                .JoinCallback(() => _lineAnimator.Play(PLAY))
                 .JoinCallback(_drag.Disable)
                 .JoinCallback(_rotation.Disable)
                 .JoinCallback(() =>
@@ -69,9 +81,9 @@ namespace Game.Magic
                 .Append(DOVirtual.Color(_fromEmission, _toEmission, _emissionFadeDuration, UpdateEmissionColor))
                 // Aberration on
                 .Join(_ppAberrationMaterial.DOFloat(1f, _THRESHOLD, _emissionFadeDuration))
-                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, 0f, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
-                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, _abberationOffset.y, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
-                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, _abberationOffset.y, _abberationOffset.z, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_aberrationOffset.x, 0f, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_aberrationOffset.x, _aberrationOffset.y, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_aberrationOffset.x, _aberrationOffset.y, _aberrationOffset.z, 0f), _CHANNELS_OFFSET, _aberrationDuration))
                 // Summon
                 .JoinCallback(_provider.Summon)
                 .AppendInterval(_emissionDuration)
