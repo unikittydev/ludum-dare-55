@@ -33,6 +33,13 @@ namespace Game.Magic.Elements
 				Spawn();
 		}
 
+		private void OnDestroy()
+		{
+			if (_disposables != null)
+				foreach (var d in _disposables)
+					d?.Dispose();
+		}
+
 		private void Spawn()
 		{
 			for (int i = 0; i < _elements.Length; i++)
