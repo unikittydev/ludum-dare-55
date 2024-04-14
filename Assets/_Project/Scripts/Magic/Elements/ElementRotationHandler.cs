@@ -11,9 +11,16 @@ namespace Game.Magic.Elements
 
 		private MagicElementView _currentElement;
 		private Vector2 _point;
+		private bool _enabled;
 
+		public void Enable() => _enabled = true;
+		public void Disable() => _enabled = false;
+		
 		public void Tick()
 		{
+			if (!_enabled)
+				return;
+
 			if (Input.GetMouseButtonDown(0))
 				StartRotation();
 			else if (Input.GetMouseButton(0))

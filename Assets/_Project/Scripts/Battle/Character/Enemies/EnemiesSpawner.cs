@@ -7,26 +7,26 @@ using Zenject;
 
 namespace Game.Battle.Character.Enemies
 {
-	public class EnemiesSpawner : IInitializable, IDisposable
+	public class EnemiesSpawner : IDisposable
 	{
 		[Inject] private EnemiesFactory _factory;
 		[Inject] private GameDifficultyService _difficulty;
 		[Inject] private ScoreService _score;
 
-
 		private int _lastScore;
 		private float _time;
 
-		private CompositeDisposable _disposables = new();
+		private CompositeDisposable _disposables;
 
-		public void Initialize()
+		public void Start()
 		{
+			_disposables = new();
 			_score.Score.Subscribe((s) =>
 			{
 				foreach (var c in _difficulty.ConditionalEnemies)
 					if (c.ScoreReached > _lastScore &&
 						c.ScoreReached < s)
-							_factory.Create(c.Config);
+						_factory.Create(c.Config);
 			}).AddTo(_disposables);
 			Observable.EveryUpdate().Subscribe(_ =>
 			{
@@ -39,9 +39,10 @@ namespace Game.Battle.Character.Enemies
 			}).AddTo(_disposables);
 		}
 
-		public void Dispose()
-		{
+		public void Stop() =>
 			_disposables?.Dispose();
-		}
+
+		public void Dispose() =>
+			Stop();
 	}
 }

@@ -24,7 +24,9 @@ namespace Game.Battle.Character
 			Container.Bind<AlliesFactory>()
 				.AsSingle();
 
-			Container.BindInterfacesTo<EnemiesSpawner>()
+			Container.BindInterfacesAndSelfTo<EnemiesSpawner>()
+				.AsSingle();
+			Container.BindInterfacesTo<EnemiesSpawnerBootstrap>()
 				.AsSingle();
 		}
 	}
