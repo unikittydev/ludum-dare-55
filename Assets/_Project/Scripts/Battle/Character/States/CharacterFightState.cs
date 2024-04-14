@@ -1,6 +1,5 @@
 using DG.Tweening;
 using System;
-using System.Threading.Tasks;
 using UniRx;
 
 namespace Game.Battle.Character.States

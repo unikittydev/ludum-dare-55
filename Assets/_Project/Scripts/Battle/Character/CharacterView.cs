@@ -33,7 +33,8 @@ namespace Game.Battle.Character
 			_model.View = this;
 			_attackSpeedText.text = _model.AttackSpeed.ToString("0.0");
 			_damageText.text = _model.Damage.ToString();
-			OnTakeDamage();
+			_slider.value = 1f * _model.Health.Value / _model.MaxHealth;
+			_healthText.text = _model.Health.Value.ToString();
 			_model.OnTakeDamage.Subscribe(_ => OnTakeDamage())
 				.AddTo(this);
 			_model.OnDie.Subscribe(_ => OnDie())

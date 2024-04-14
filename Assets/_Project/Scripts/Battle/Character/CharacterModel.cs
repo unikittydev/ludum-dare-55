@@ -33,9 +33,10 @@ namespace Game.Battle.Character
 		public void TakeDamage(int damage)
 		{
 			_health.Value = Mathf.Max(0, _health.Value - damage);
-			OnTakeDamage.Execute();
 			if (_health.Value <= 0)
 				OnDie.Execute();
+			else
+				OnTakeDamage.Execute();
 		}
 	}
 }
