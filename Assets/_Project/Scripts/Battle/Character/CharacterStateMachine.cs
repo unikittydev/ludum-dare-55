@@ -19,7 +19,7 @@ namespace Game.Battle.Character
 		{
 			_model = model;
 			_model.StateMachine = this;
-			Model.OnDie.Subscribe(_ => SwitchState(null))
+			Model.Health.Where(h => h == 0).Subscribe(_ => SwitchState(null))
 				.AddTo(this);
 		}
 

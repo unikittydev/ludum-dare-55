@@ -51,7 +51,7 @@ namespace Game.Magic.Elements
 			if (_currentElement == null) return;
 
 			_point = _camera.ScreenToWorldPoint(Input.mousePosition);
-			_currentElement.transform.position = Vector2.Lerp((Vector2)_currentElement.transform.position, _point, 0.03f);
+			_currentElement.transform.position = Vector2.Lerp((Vector2)_currentElement.transform.position, _point, 0.1f);
 		}
 
 		private void Drop()
