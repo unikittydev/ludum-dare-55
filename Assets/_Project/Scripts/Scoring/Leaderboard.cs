@@ -22,6 +22,8 @@ namespace Game.Scoring
 		
 		async void IInitializable.Initialize()
 		{
+			if (AuthenticationService.Instance.IsSignedIn)
+				return;
 			await UnityServices.InitializeAsync();
 
 			AuthenticationService.Instance.SignedIn += () =>
