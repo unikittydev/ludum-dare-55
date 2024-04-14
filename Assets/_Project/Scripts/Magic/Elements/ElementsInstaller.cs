@@ -9,7 +9,8 @@ namespace Game.Magic.Elements
 		[SerializeField] private MagicArrowView _arrowPrefab;
 		[Space]
 		[SerializeField] private LayerMask _elementsMask;
-		[SerializeField] private LayerMask _slotsMask;
+		[SerializeField] private LayerMask _elementsInputMask;
+		[SerializeField] private LayerMask _slotsInputMask;
 		[SerializeField] private LineRenderer _rotationLine;
 		[SerializeField] private LineRenderer _linkPrefab;
 		[SerializeField] private Camera _camera;
@@ -18,10 +19,10 @@ namespace Game.Magic.Elements
 		{
 			Container.BindInterfacesTo<ElementRotationHandler>()
 				.AsSingle()
-				.WithArguments(_elementsMask, _rotationLine, _camera);
+				.WithArguments(_elementsInputMask, _rotationLine, _camera);
 			Container.BindInterfacesTo<ElementDragHandler>()
 				.AsSingle()
-				.WithArguments(_elementsMask, _slotsMask, _camera);
+				.WithArguments(_elementsInputMask, _slotsInputMask, _camera);
 			Container.BindInterfacesAndSelfTo<ElementsLinkHandler>()
 				.AsSingle()
 				.WithArguments(_elementsMask, _linkPrefab);

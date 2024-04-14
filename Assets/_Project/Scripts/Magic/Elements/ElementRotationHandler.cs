@@ -6,7 +6,7 @@ namespace Game.Magic.Elements
 	public class ElementRotationHandler : ITickable
 	{
 		[Inject] private LineRenderer _rotationLine;
-		[Inject] private LayerMask _elementsLayer;
+		[Inject] private LayerMask _elementsInputLayer;
 		[Inject] private Camera _camera;
 
 		private MagicElementView _currentElement;
@@ -25,11 +25,11 @@ namespace Game.Magic.Elements
 		private void StartRotation()
 		{
 			_point = _camera.ScreenToWorldPoint(Input.mousePosition);
-			var collider = Physics2D.OverlapPoint(_point, _elementsLayer);
+			var collider = Physics2D.OverlapPoint(_point, _elementsInputLayer);
 			if (collider == null)
 				return;
 
-			var element = collider.GetComponent<MagicElementView>();
+			var element = collider.GetComponentInParent<MagicElementView>();
 			if (!element.Model.InCircle.Value)
 				return;
 
