@@ -81,7 +81,6 @@ namespace Game.Battle
 			{
 				left.StateMachine.SwitchState(new CharacterFightState(left.StateMachine, right));
 				right.StateMachine.SwitchState(new CharacterFightState(right.StateMachine, left));
-				Debug.Log("Fight");
 			}
 		}
 
@@ -95,16 +94,17 @@ namespace Game.Battle
 				_leftSide.Dequeue();
 				if (_leftSide.Count == 0)
 					OnLeftSideDie.Execute();
+				MoveSide(_leftSide.ToArray(), true);
 				if (hasRight)
 					right.StateMachine.SwitchState(new CharacterReadyState(right.StateMachine));
-				MoveSide(_leftSide.ToArray(), true);
 			}
 			else if (character == right)
 			{
+				_rightSide.Dequeue();
 				OnRightSideKilled.Execute(_rightSide.Dequeue());
+				MoveSide(_rightSide.ToArray(), false);
 				if (hasLeft)
 					left.StateMachine.SwitchState(new CharacterReadyState(left.StateMachine));
-				MoveSide(_rightSide.ToArray(), false);
 			}
 		}
 
