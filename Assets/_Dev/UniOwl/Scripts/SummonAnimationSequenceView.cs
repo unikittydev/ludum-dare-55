@@ -53,9 +53,10 @@ namespace Game.Magic
             _lineAnimator.Play(PLAY);
 
             _tween = DOTween.Sequence()
-                .AppendCallback(_drag.Disable)
-                .AppendCallback(_rotation.Disable)
-                .AppendCallback(() =>
+                // Prepare
+                .JoinCallback(_drag.Disable)
+                .JoinCallback(_rotation.Disable)
+                .JoinCallback(() =>
                 {
 					foreach (var or in _circleFactory.CurrentCircle.Value.Model.Orbits)
 						foreach (var sl in or.Slots)
@@ -64,18 +65,29 @@ namespace Game.Magic
 									ar.View.gameObject.SetActive(false);
 				})
                 .AppendInterval(_delay)
+                // Emission on
                 .Append(DOVirtual.Color(_fromEmission, _toEmission, _emissionFadeDuration, UpdateEmissionColor))
+                // Aberration on
                 .Join(_ppAberrationMaterial.DOFloat(1f, _THRESHOLD, _emissionFadeDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, 0f, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, _abberationOffset.y, 0f, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(new Vector4(_abberationOffset.x, _abberationOffset.y, _abberationOffset.z, 0f), _CHANNELS_OFFSET, _aberrationDuration))
+                // Summon
                 .JoinCallback(_provider.Summon)
                 .AppendInterval(_emissionDuration)
-                .Append(DOVirtual.Color(_toEmission, _fromEmission, _emissionFadeDuration, UpdateEmissionColor))
-                .Join(_ppAberrationMaterial.DOFloat(0f, _THRESHOLD, _emissionFadeDuration))
+                // Aberration off
+                .Append(_ppAberrationMaterial.DOFloat(0f, _THRESHOLD, _aberrationDuration))
+                .Join(_ppAberrationMaterial.DOVector(Vector4.zero, _CHANNELS_OFFSET, _aberrationDuration))
+                // Emission off
+                .Join(DOVirtual.Color(_toEmission, _fromEmission, _emissionFadeDuration, UpdateEmissionColor))
+                // Remake circle
                 .Append(DOVirtual.Float(0f, 1f, _dissolveDuration, UpdateDissolveFactor))
                 .AppendCallback(_factory.CreateNew)
                 .Append(DOVirtual.Float(1f, 0f, _dissolveDuration, UpdateDissolveFactor))
+                // Cleanup
                 .AppendCallback(_drag.Enable)
-                .AppendCallback(_rotation.Enable)
-                .AppendCallback(() => _lineAnimator.Play(STOP));
+                .JoinCallback(_rotation.Enable)
+                .JoinCallback(() => _lineAnimator.Play(STOP));
         }
 
         private void UpdateEmissionColor(Color value)
