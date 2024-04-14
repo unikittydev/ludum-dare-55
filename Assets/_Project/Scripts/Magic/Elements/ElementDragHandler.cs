@@ -12,16 +12,22 @@ namespace Game.Magic.Elements
 
 		private MagicElementView _currentElement;
 		private Vector2 _point;
+		private bool _enabled;
 
 		public ElementDragHandler(LayerMask elementsLayer, LayerMask slotsLayer, Camera camera)
 		{
 			_elementsInputLayer = elementsLayer;
 			_slotsInputLayer = slotsLayer;
 			_camera = camera;
+			_enabled = true;
 		}
+
+		public void Enable() => _enabled = true;
+		public void Disable() => _enabled = false;
 
 		public void Tick()
 		{
+			if (!_enabled) return;
 			if (Input.GetMouseButtonDown(0))
 				StartDrag();
 			else if (Input.GetMouseButton(0))

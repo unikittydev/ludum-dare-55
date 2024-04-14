@@ -32,6 +32,8 @@ namespace Game.Configs
 			public EnemyConfig Config;
 		}
 
+		public int SpawnAfterPlayerSummons => _spawnAfterPlayerSummons;
+
 		public IReadOnlyList<EnemyConfig> Enemies => _enemies;
 		public IReadOnlyList<Condition> ConditionalEnemies => _conditionalEnemies;
 
@@ -43,6 +45,9 @@ namespace Game.Configs
 		public float DamageRandom => _damageRandom;
 		public float AttackSpeedRandom => _attackSpeedRandom;
 
+		[Min(1)]
+		[SerializeField] private int _spawnAfterPlayerSummons = 1;
+		[Space]
 		[SerializeField] private AnimationCurve _spawnRateCurve;
 		[SerializeField] private AnimationCurve _healthCurve;
 		[SerializeField] private AnimationCurve _damageCurve;

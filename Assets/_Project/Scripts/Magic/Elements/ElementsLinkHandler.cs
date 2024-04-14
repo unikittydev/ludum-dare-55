@@ -62,9 +62,9 @@ namespace Game.Magic.Elements
 				{
 					slot.Element.Where(el => el != null).Subscribe((el) =>
 					{
-						CheckLinks(circle);
 						el.Rotation.Subscribe((r) => CheckLinks(circle))
 							.AddTo(_disposables);
+						CheckLinks(circle);
 					}).AddTo(_disposables);
 				}
 			}

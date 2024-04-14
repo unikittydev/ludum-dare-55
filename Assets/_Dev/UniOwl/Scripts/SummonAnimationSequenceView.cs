@@ -1,4 +1,5 @@
 using DG.Tweening;
+using Game.Magic.Elements;
 using Game.Summoning;
 using UnityEngine;
 using Zenject;
@@ -30,8 +31,10 @@ namespace Game.Magic
 
         [Inject] private MagicCircleFactory _factory;
         [Inject] private SummonProvider _provider;
-        
-        private void OnDisable()
+		[Inject] private ElementDragHandler _drag;
+		[Inject] private ElementRotationHandler _rotation;
+
+		private void OnDisable()
         {
             UpdateEmissionColor(_fromEmission);
             UpdateDissolveFactor(0f);
@@ -43,6 +46,8 @@ namespace Game.Magic
             _lineAnimator.Play(PLAY);
 
             DOTween.Sequence()
+                .AppendCallback(_drag.Disable)
+                .AppendCallback(_rotation.Disable)
                 .AppendInterval(_delay)
                 .Append(DOVirtual.Color(_fromEmission, _toEmission, _emissionFadeDuration, UpdateEmissionColor))
                 .JoinCallback(_provider.Summon)
@@ -51,6 +56,8 @@ namespace Game.Magic
                 .Append(DOVirtual.Float(0f, 1f, _dissolveDuration, UpdateDissolveFactor))
                 .AppendCallback(_factory.CreateNew)
                 .Append(DOVirtual.Float(1f, 0f, _dissolveDuration, UpdateDissolveFactor))
+                .AppendCallback(_drag.Enable)
+                .AppendCallback(_rotation.Enable)
                 .AppendCallback(() => _lineAnimator.Play(STOP));
         }
 

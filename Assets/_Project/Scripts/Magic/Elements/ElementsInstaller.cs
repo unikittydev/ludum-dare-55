@@ -17,10 +17,10 @@ namespace Game.Magic.Elements
 
 		public override void InstallBindings()
 		{
-			Container.BindInterfacesTo<ElementRotationHandler>()
+			Container.BindInterfacesAndSelfTo<ElementRotationHandler>()
 				.AsSingle()
 				.WithArguments(_elementsInputMask, _rotationLine, _camera);
-			Container.BindInterfacesTo<ElementDragHandler>()
+			Container.BindInterfacesAndSelfTo<ElementDragHandler>()
 				.AsSingle()
 				.WithArguments(_elementsInputMask, _slotsInputMask, _camera);
 			Container.BindInterfacesAndSelfTo<ElementsLinkHandler>()
