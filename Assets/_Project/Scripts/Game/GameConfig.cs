@@ -1,6 +1,9 @@
+using Game.Battle.Character.Enemies;
 using Game.Magic.Elements;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Game.Battle.Character.Allies;
 
 namespace Game.Configs
 {
@@ -22,6 +25,16 @@ namespace Game.Configs
 	[System.Serializable]
 	public class EnemiesConfig
 	{
+		[Serializable]
+		public struct Condition
+		{
+			public int ScoreReached;
+			public EnemyConfig Config;
+		}
+
+		public IReadOnlyList<EnemyConfig> Enemies => _enemies;
+		public IReadOnlyList<Condition> ConditionalEnemies => _conditionalEnemies;
+
 		public AnimationCurve SpawnRateCurve => _spawnRateCurve;
 		public AnimationCurve HealthCurve => _healthCurve;
 		public AnimationCurve DamageCurve => _damageCurve;
@@ -37,18 +50,25 @@ namespace Game.Configs
 		[SerializeField] private float _healthRandom;
 		[SerializeField] private float _damageRandom;
 		[SerializeField] private float _attackSpeedRandom;
+		[Space]
+		[SerializeField] private EnemyConfig[] _enemies;
+		[SerializeField] private List<Condition> _conditionalEnemies;
 	}
 
 	[System.Serializable]
 	public class AlliesConfig
 	{
-		public AnimationCurve BaseHealthCurve => _baseHealthCurve;
-		public AnimationCurve BaseDamageCurve => _baseDamageCurve;
-		public AnimationCurve BaseArrackSpeedCurve => _baseAttackSpeedCurve;
+		public AnimationCurve BaseHealthMultiplierCurve => _baseHealthCurve;
+		public AnimationCurve BaseDamageMultiplierCurve => _baseDamageCurve;
+		public AnimationCurve BaseAttackSpeedMultiplierCurve => _baseAttackSpeedCurve;
+
+		public IReadOnlyList<AllyConfig> Allies => _allies;
 
 		[SerializeField] private AnimationCurve _baseHealthCurve;
 		[SerializeField] private AnimationCurve _baseDamageCurve;
 		[SerializeField] private AnimationCurve _baseAttackSpeedCurve;
+		[Space]
+		[SerializeField] private AllyConfig[] _allies;
 	}
 
 	[System.Serializable]

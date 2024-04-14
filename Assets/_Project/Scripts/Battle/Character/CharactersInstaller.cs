@@ -1,3 +1,5 @@
+using Game.Battle.Character.Allies;
+using Game.Battle.Character.Enemies;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +16,15 @@ namespace Game.Battle.Character
 				.AsSingle();
 
 			Container.Bind<CharacterFactory>()
+				.AsSingle();
+
+			Container.Bind<EnemiesFactory>()
+				.AsSingle();
+
+			Container.Bind<AlliesFactory>()
+				.AsSingle();
+
+			Container.BindInterfacesTo<EnemiesSpawner>()
 				.AsSingle();
 		}
 	}
