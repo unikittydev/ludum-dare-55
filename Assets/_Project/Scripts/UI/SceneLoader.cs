@@ -23,8 +23,6 @@ namespace Game.UI
 
         private void Start()
         {
-            _mask.sizeDelta = Vector2.zero;
-            _mask.anchoredPosition = new Vector2(Screen.width, Screen.height) * .5f;
             FadeOutMask();
         }
 		private void OnDisable()
@@ -67,16 +65,24 @@ namespace Game.UI
             return seq;
         }
 
-        public Sequence FadeOutMask() => FadeOutMask(_mask.anchoredPosition);
-        
-        public Sequence FadeOutMask(Vector2 position)
+        public Sequence FadeOutMask()
         {
+            Vector2 position;
+
+            if (_target != null)
+                position = RectTransformUtility.WorldToScreenPoint(_camera, _target.position);
+            else
+                position = _mask.anchoredPosition;
+            
             _tween?.Kill();
             
             _mask.anchoredPosition = position;
+            _mask.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0f);
+            _mask.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0f);
             _mask.gameObject.SetActive(true);
             
             var seq = DOTween.Sequence()
+                .AppendInterval(.5f)
                 .Append(_mask.DOSizeDelta(new Vector2(Screen.width, Screen.width) * 2f, _fadeDuration))
                 .AppendCallback(() => _mask.gameObject.SetActive(false))
                 .SetUpdate(true);
