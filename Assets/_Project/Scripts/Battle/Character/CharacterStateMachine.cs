@@ -28,9 +28,12 @@ namespace Game.Battle.Character
 
 		public void SwitchState(CharacterState state)
 		{
-			_currentState.Value?.Exit();
-			_currentState.SetValueAndForceNotify(state);
-			_currentState.Value?.Enter();
+			if (this.isActiveAndEnabled)
+			{
+				_currentState.Value?.Exit();
+				_currentState.SetValueAndForceNotify(state);
+				_currentState.Value?.Enter();
+			}
 		}
 	}
 }

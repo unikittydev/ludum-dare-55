@@ -6,6 +6,7 @@ using UnityEngine;
 using System;
 using Unity.Services.Leaderboards;
 using Newtonsoft.Json;
+using Unity.Services.Leaderboards.Models;
 
 namespace Game.Scoring
 {
@@ -36,11 +37,11 @@ namespace Game.Scoring
 			Debug.Log(JsonConvert.SerializeObject(response));
 		}
 
-		public async void GetScores()
+		public async LeaderboardEntry GetScores()
 		{
 			var scoresResponse =
 				await LeaderboardsService.Instance.GetScoresAsync(ID);
-			Debug.Log(JsonConvert.SerializeObject(scoresResponse));
+			return scoresResponse.Results;
 		}
 
 		public async void GetPlayerScore()
