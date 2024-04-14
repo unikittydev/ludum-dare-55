@@ -63,7 +63,9 @@ namespace Game.Battle
 		{
 			character.StateMachine.CurrentState.Subscribe(OnCharacterStateChanged)
 				.AddTo(character.View);
-			character.OnDie.Subscribe(_ => OnCharacterDie(character))
+			character.Health
+				.Where(h => h == 0)
+				.Subscribe(_ => OnCharacterDie(character))
 				.AddTo(character.View);
 		}
 
