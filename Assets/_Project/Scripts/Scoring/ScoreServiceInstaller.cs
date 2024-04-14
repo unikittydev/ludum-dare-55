@@ -7,8 +7,7 @@ namespace Game.Scoring
 		public override void InstallBindings()
 		{
 			Container.BindInterfacesAndSelfTo<Leaderboard>()
-				.AsSingle()
-				.WhenInjectedInto<ScoreService>();
+				.AsSingle();
 
 			Container.Bind<ScoreService>()
 				.AsSingle();

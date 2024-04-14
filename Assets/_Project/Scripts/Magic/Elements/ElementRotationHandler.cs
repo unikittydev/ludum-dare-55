@@ -11,7 +11,7 @@ namespace Game.Magic.Elements
 
 		private MagicElementView _currentElement;
 		private Vector2 _point;
-		private bool _enabled;
+		private bool _enabled = true;
 
 		public void Enable() => _enabled = true;
 		public void Disable() => _enabled = false;
