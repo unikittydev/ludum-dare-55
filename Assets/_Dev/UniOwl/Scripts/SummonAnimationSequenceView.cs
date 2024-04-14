@@ -18,8 +18,6 @@ namespace Game.Magic
         [SerializeField] private Animator _lineAnimator;
 
         [SerializeField] private Material[] _materials;
-
-        [SerializeField] private ParticleSystem _psSmoke;
         
         [SerializeField] private float _delay = 2f;
         
