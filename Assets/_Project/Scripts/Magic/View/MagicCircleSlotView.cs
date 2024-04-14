@@ -27,7 +27,7 @@ namespace Game.Magic.View
             foreach (var arrow in element.View.Arrows)
                 arrow.Line.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
 
-            element.View.SetInCircleMat();
+            element.View.SetInCircle();
             element.View.SpriteRenderer.sprite = element.Config.SymbolSprite;
             element.InCircle.Value = true;
             element.View.transform.SetParent(transform);

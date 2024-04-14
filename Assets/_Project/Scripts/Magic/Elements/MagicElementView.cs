@@ -29,8 +29,12 @@ namespace Game.Magic.Elements
 			_spriteRenderer.material = _initialMaterial;
 		}
 
-		public void SetInCircleMat() =>
+		public void SetInCircle()
+		{
 			_spriteRenderer.material = _inCircleMaterial;
+			foreach (var arrow in Arrows)
+				arrow.SetInCircle();
+		}
 
 		internal void StartRotating(Vector2 point) =>
 			_startRotationAxis = (point - (Vector2) transform.position).normalized;
