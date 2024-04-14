@@ -9,8 +9,16 @@ namespace Game.Battle.Character
 		private static readonly int DAMAGE_KEY = Animator.StringToHash("DAMAGE");
 		private static readonly int DEATH_KEY = Animator.StringToHash("DEATH");
 		private static readonly int MOVE_KEY = Animator.StringToHash("MOVE");
-		
+
+		private static readonly int ATTACK_ANIM_SPEED = Animator.StringToHash("ATTACK_SPEED");
+		private static readonly int DAMAGE_ANIM_SPEED = Animator.StringToHash("DAMAGE_SPEED");
+
 		[SerializeField] private Animator _animator;
+
+		public void SetAttackSpeed(float speed) =>
+			_animator.SetFloat(ATTACK_ANIM_SPEED, speed);
+		public void SetDamageSpeed(float speed) =>
+			_animator.SetFloat(DAMAGE_ANIM_SPEED, speed);
 
 		public void PlayAttack() =>
 			_animator.SetTrigger(ATTACK_KEY);

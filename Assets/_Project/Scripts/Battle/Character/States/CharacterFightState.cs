@@ -21,10 +21,12 @@ namespace Game.Battle.Character.States
 			Observable.Interval(TimeSpan.FromSeconds(1 / _stateMachine.Model.AttackSpeed))
 				.Subscribe(_ =>
 				{
+					var attackSpeed = _stateMachine.Model.AttackSpeed;
+					_stateMachine.Model.View.Animator.SetAttackSpeed(attackSpeed);
 					_attackTween = DOTween.Sequence()
 						.AppendCallback(_stateMachine.Model.View.Animator.PlayAttack)
-						.AppendInterval(_stateMachine.Model.View.AttackDelay)
-						.AppendCallback(() => _opponent.TakeDamage(_stateMachine.Model.Damage));
+						.AppendInterval(_stateMachine.Model.View.AttackDelay / attackSpeed)
+						.AppendCallback(() => _opponent.TakeDamage(_stateMachine.Model.Damage, attackSpeed));
 				}).AddTo(_disposables);
 			_stateMachine.Model.View.Animator.PlayMove(false);
 		}

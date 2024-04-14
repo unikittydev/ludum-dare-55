@@ -30,8 +30,9 @@ namespace Game.Battle.Character
 			_attackSpeed = attackSpeed;
 		}
 
-		public void TakeDamage(int damage)
+		public void TakeDamage(int damage, float speed)
 		{
+			View?.Animator.SetDamageSpeed(speed);
 			_health.Value = Mathf.Max(0, _health.Value - damage);
 			if (_health.Value <= 0)
 				OnDie.Execute();
