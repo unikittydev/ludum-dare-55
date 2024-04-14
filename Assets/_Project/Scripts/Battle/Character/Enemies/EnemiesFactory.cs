@@ -1,4 +1,5 @@
 using Game.Configs;
+using Game.Scoring;
 using Zenject;
 
 namespace Game.Battle.Character.Enemies
@@ -8,6 +9,7 @@ namespace Game.Battle.Character.Enemies
 		[Inject] private Battleground _battle;
 		[Inject] private GameDifficultyService _difficulty;
 		[Inject] private CharacterFactory _factory;
+		[Inject] private ScoreService _score;
 
 		public void Create(EnemyConfig config)
 		{
@@ -18,6 +20,7 @@ namespace Game.Battle.Character.Enemies
 				(int) (hp * config.HealthMultiplier), 
 				(int) (dmg * config.DamageMultiplier), 
 				atkSpeed * config.AttackSpeedMultiplier);
+			enemy.ScoreByKill = (int) config.ScoreByKillCurve.Evaluate(_score.Score.Value); 
 			_battle.SendRightSide(enemy);
 		}
 	}
