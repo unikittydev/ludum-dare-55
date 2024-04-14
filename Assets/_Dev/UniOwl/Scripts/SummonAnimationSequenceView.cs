@@ -13,12 +13,16 @@ namespace Game.Magic
 
         private static readonly int _EMISSION = Shader.PropertyToID("_Emission");
         private static readonly int _DISSOLVE_FACTOR = Shader.PropertyToID("_Dissolve_Factor");
+        private static readonly int _THRESHOLD = Shader.PropertyToID("_Threshold");
+        private static readonly int _CHANNELS_OFFSET = Shader.PropertyToID("_Channels_Offset");
         
         [SerializeField] private ParticleSystem _psSummon;
         [SerializeField] private Animator _lineAnimator;
 
         [SerializeField] private Material[] _materials;
-        
+        [SerializeField] private Material _ppAberrationMaterial;
+
+        [SerializeField] private Vector3 _abberationOffset;
         [SerializeField] private float _delay = 2f;
         
         [SerializeField, ColorUsage(false, true)] private Color _fromEmission;
@@ -26,6 +30,7 @@ namespace Game.Magic
         [SerializeField] private float _emissionFadeDuration = .1f;
         [SerializeField] private float _emissionDuration = .5f;
         [SerializeField] private float _dissolveDuration = .5f;
+        [SerializeField] private float _aberrationDuration = .25f;
 
         [Inject] private MagicCircleFactory _factory;
         [Inject] private SummonProvider _provider;
@@ -60,9 +65,11 @@ namespace Game.Magic
 				})
                 .AppendInterval(_delay)
                 .Append(DOVirtual.Color(_fromEmission, _toEmission, _emissionFadeDuration, UpdateEmissionColor))
+                .Join(_ppAberrationMaterial.DOFloat(1f, _THRESHOLD, _emissionFadeDuration))
                 .JoinCallback(_provider.Summon)
                 .AppendInterval(_emissionDuration)
                 .Append(DOVirtual.Color(_toEmission, _fromEmission, _emissionFadeDuration, UpdateEmissionColor))
+                .Join(_ppAberrationMaterial.DOFloat(0f, _THRESHOLD, _emissionFadeDuration))
                 .Append(DOVirtual.Float(0f, 1f, _dissolveDuration, UpdateDissolveFactor))
                 .AppendCallback(_factory.CreateNew)
                 .Append(DOVirtual.Float(1f, 0f, _dissolveDuration, UpdateDissolveFactor))
