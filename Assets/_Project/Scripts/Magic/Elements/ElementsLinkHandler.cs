@@ -117,33 +117,41 @@ namespace Game.Magic.Elements
 		private bool NeedLink(OrbitSlot slot1, OrbitSlot slot2,
 			out MagicArrowModel arrow1, out MagicArrowModel arrow2)
 		{
-			if (!CheckArrows(slot1, slot2, out arrow1, out arrow2))
-				return false;
-			var arrow = arrow1.Axis.GetRotated(-slot1.Element.Value.Rotation.Value);
-
-			var hits = Physics2D.RaycastAll(slot1.View.transform.position, arrow, 100, _elementsLayer, 0);
-
-			GameObject nearby = null;
-			float distance = float.MaxValue;
-			foreach (var hit in hits)
+			arrow1 = null; arrow2 = null;
+			CheckArrows(slot1, slot2, out var arrows1, out var arrows2);
+			for (int i = 0; i < arrows1.Count; i++)
 			{
-				if (hit.collider.gameObject == slot1.Element.Value.View.gameObject)
-					continue;
-				var d = Vector2.Distance(hit.collider.transform.position, slot1.Element.Value.View.transform.position);
-				if (distance > d)
-				{
-					distance = d;
-					nearby = hit.collider.gameObject;
-				}
-			}
+				arrow1 = arrows1[i];
+				arrow2 = arrows2[i];
 
-			return (nearby == slot2.Element.Value.View.gameObject);
+				var arrow = arrow1.Axis.GetRotated(-slot1.Element.Value.Rotation.Value);
+
+				var hits = Physics2D.RaycastAll(slot1.View.transform.position, arrow, 100, _elementsLayer, 0);
+
+				GameObject nearby = null;
+				float distance = float.MaxValue;
+				foreach (var hit in hits)
+				{
+					if (hit.collider.gameObject == slot1.Element.Value.View.gameObject)
+						continue;
+					var d = Vector2.Distance(hit.collider.transform.position, slot1.Element.Value.View.transform.position);
+					if (distance > d)
+					{
+						distance = d;
+						nearby = hit.collider.gameObject;
+					}
+				}
+
+				if (nearby == slot2.Element.Value.View.gameObject)
+					return true;
+			}
+			return false;
 		}
 
-		private bool CheckArrows(OrbitSlot slot1, OrbitSlot slot2,
-			out MagicArrowModel arrow1, out MagicArrowModel arrow2)
+		private void CheckArrows(OrbitSlot slot1, OrbitSlot slot2,
+			out List<MagicArrowModel> arrow1, out List<MagicArrowModel> arrow2)
 		{
-			arrow1 = null; arrow2 = null;
+			arrow1 = new(); arrow2 = new();
 
 			var el1 = slot1.Element.Value;
 			var el2 = slot2.Element.Value;
@@ -159,14 +167,11 @@ namespace Game.Magic.Elements
 					if (el1Arrows[i].Color == el2Arrows[j].Color &&
 						el1RotatedArrows[i] + el2RotatedArrows[j] == Vector2.zero)
 					{
-						arrow1 = el1Arrows[i];
-						arrow2 = el2Arrows[j];
-						return true;
+						arrow1.Add(el1Arrows[i]);
+						arrow2.Add(el2Arrows[j]);
 					} 
 				}
 			}
-
-			return false;
 		}
 
 		private void CreateLink(OrbitSlot slot1, OrbitSlot slot2,

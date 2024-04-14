@@ -50,6 +50,10 @@ namespace Game.Battle.Character
 
 		private void OnDie()
 		{
+			_slider.gameObject.SetActive(false);
+			_healthText.gameObject.SetActive(false);
+			_attackSpeedText.gameObject.SetActive(false);
+			_damageText.gameObject.SetActive(false);
 			_animator.PlayDeath();
 			Destroy(gameObject, _destroyDelay);
 		}
