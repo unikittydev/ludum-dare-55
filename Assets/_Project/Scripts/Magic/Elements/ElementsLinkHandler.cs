@@ -60,9 +60,8 @@ namespace Game.Magic.Elements
 			{
 				foreach (var slot in orbit.Slots)
 				{
-					slot.Element.Subscribe((el) =>
+					slot.Element.Where(el => el != null).Subscribe((el) =>
 					{
-						if (el == null) return;
 						CheckLinks(circle);
 						el.Rotation.Subscribe((r) => CheckLinks(circle))
 							.AddTo(_disposables);

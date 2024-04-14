@@ -14,6 +14,8 @@ namespace Game.Magic.Elements
 		public IReadOnlyList<MagicArrowView> Arrows;
 
 		[SerializeField] private SpriteRenderer _spriteRenderer;
+		[SerializeField] private Material _initialMaterial;
+		[SerializeField] private Material _inCircleMaterial;
 
 		[Inject] private MagicCircleConfig _config;
 		[Inject] private MagicElementModel _model;
@@ -24,7 +26,11 @@ namespace Game.Magic.Elements
 		private void Construct()
 		{
 			_spriteRenderer.sprite = _model.Config.RuneSprite;
+			_spriteRenderer.material = _initialMaterial;
 		}
+
+		public void SetInCircleMat() =>
+			_spriteRenderer.material = _inCircleMaterial;
 
 		internal void StartRotating(Vector2 point) =>
 			_startRotationAxis = (point - (Vector2) transform.position).normalized;
