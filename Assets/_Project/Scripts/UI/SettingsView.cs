@@ -15,7 +15,9 @@ namespace Game.UI
         private Tween _tween;
 
         private bool paused;
-        private bool inGame = false;
+        
+        [SerializeField]
+        private bool inGame = true;
 
         [SerializeField] private GameObject mainMenuButtons, gameMenuButtons;
 
