@@ -47,7 +47,10 @@ namespace Game.Battle.Character
 			_animator.PlayDamage();
 		}
 
-		private void OnDie() =>
+		private void OnDie()
+		{
+			_animator.PlayDeath();
 			Destroy(gameObject, _destroyDelay);
+		}
 	}
 }
