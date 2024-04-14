@@ -1,4 +1,3 @@
-using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +14,7 @@ namespace Game.UI
         [SerializeField] private PanelAnimationView _setingsAnimationView;
         [SerializeField] private PanelAnimationView _leaderboardAnimationView;
         [SerializeField] private SettingsView _settingsView;
+        [SerializeField] private Camera _camera; 
         
         [SerializeField] private int gameBuildIndex;
         
@@ -39,10 +39,15 @@ namespace Game.UI
                 .SetUpdate(true);
         }
 
-        public Sequence FadeInMask() => FadeInMask(_mask.anchoredPosition);
-
-        public Sequence FadeInMask(Vector2 position)
+        public Sequence FadeInMask()
         {
+            Vector2 position;
+
+            if (_target != null)
+                position = RectTransformUtility.WorldToScreenPoint(_camera, _target.position);
+            else
+                position = _mask.anchoredPosition;
+            
             _tween?.Kill();
             
             _mask.gameObject.SetActive(true);

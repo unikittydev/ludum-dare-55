@@ -29,8 +29,8 @@ namespace _Project.Scripts.UI
         private void OnLeftSideDie(Unit _)
         {
             _leaderBoardPanel.ShowPanel();
-            _settingsView.PauseWithoutMenu();
             _settingsView.SetInGame(false);
+            _settingsView.PauseWithoutMenu();
         }
     }
 }
