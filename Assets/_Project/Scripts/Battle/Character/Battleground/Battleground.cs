@@ -3,7 +3,6 @@ using Game.Battle.Character;
 using Game.Battle.Character.States;
 using UniRx;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Game.Battle
@@ -22,13 +21,13 @@ namespace Game.Battle
 		private Queue<CharacterModel> _leftSide = new();
 		private Queue<CharacterModel> _rightSide = new();
 
-		private List<Tween> _spawnTweens = new();
+		private List<Tween> _tweens = new();
 
 		private void OnDisable()
 		{
-			foreach (var t in _spawnTweens)
+			foreach (var t in _tweens)
 				t?.Kill();
-			_spawnTweens.Clear();
+			_tweens.Clear();
 		}
 
 		public void SendLeftSide(CharacterModel character)
@@ -63,9 +62,8 @@ namespace Game.Battle
 			spawnPoint.y += _spawnHeight;
 			
 			character.View.transform.position = spawnPoint;
-			character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration);
-			_spawnTweens.Add(DOTween.Sequence()
-				.AppendInterval(_spawnDuration)
+			_tweens.Add(DOTween.Sequence()
+				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
 				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
 		}
 

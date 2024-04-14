@@ -17,7 +17,7 @@ namespace Game.UI
 
         [SerializeField] private float fadeDuration = .1f;
 
-        private Tween _tweener;
+        private Tween _tween;
 
         private void OnEnable()
         {
@@ -26,39 +26,39 @@ namespace Game.UI
 
         private void OnDisable()
         {
-            _tweener.Kill();
+            _tween?.Kill();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_selectable != null && !_selectable.interactable) return;
 
-            _tweener.Kill();
-            _tweener = _targetGraphic.DOColor(_hoverColor, fadeDuration).SetUpdate(true);
+            _tween?.Kill();
+            _tween = _targetGraphic.DOColor(_hoverColor, fadeDuration).SetUpdate(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (_selectable != null && !_selectable.interactable) return;
 
-            _tweener.Kill();
-            _tweener = _targetGraphic.DOColor(_defaultColor, fadeDuration).SetUpdate(true);
+            _tween?.Kill();
+            _tween = _targetGraphic.DOColor(_defaultColor, fadeDuration).SetUpdate(true);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if (_selectable != null && !_selectable.interactable) return;
 
-            _tweener.Kill();
-            _tweener = _targetGraphic.DOColor(_clickColor, fadeDuration).SetUpdate(true);
+            _tween?.Kill();
+            _tween = _targetGraphic.DOColor(_clickColor, fadeDuration).SetUpdate(true);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
             if (_selectable != null && !_selectable.interactable) return;
 
-            _tweener.Kill();
-            _tweener = _targetGraphic.DOColor(_hoverColor, fadeDuration).SetUpdate(true);
+            _tween?.Kill();
+            _tween = _targetGraphic.DOColor(_hoverColor, fadeDuration).SetUpdate(true);
         }
     }
 }
