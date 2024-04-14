@@ -17,6 +17,8 @@ namespace Game.Summoning
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
+			if (_cooldownTime > 0)
+				return;
 			_cooldownTime = _cooldownDuration;
 			_provider.Summon();
 		}
@@ -24,7 +26,7 @@ namespace Game.Summoning
 		private void Update()
 		{
 			_cooldownTime -= Time.deltaTime;
-			_view.Lock = _cooldownTime >= 0;
+			_view.Lock.Value = _cooldownTime >= 0;
 			_cooldownImage.gameObject.SetActive(_cooldownTime >= 0);
 			if (_cooldownTime > 0)
 				_cooldownImage.fillAmount = _cooldownTime / _cooldownDuration;

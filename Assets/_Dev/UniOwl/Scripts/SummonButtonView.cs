@@ -1,5 +1,5 @@
-using System;
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,7 +7,7 @@ namespace Game.Magic
 {
     public class SummonButtonView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
     {
-        public bool Lock { get; set; } = false;
+        public ReactiveProperty<bool> Lock { get; set; } = new(false);
 
         [SerializeField] private SpriteRenderer _innerCircle;
         [SerializeField] private SpriteRenderer _outerCircle;
@@ -25,8 +25,8 @@ namespace Game.Magic
         private Tween _transitionTween;
 
         private bool pointerOver;
-        
-        private void Start()
+
+		private void Start()
         {
             _innerCircle.transform.localScale = Vector3.one * _defaultState._innerScale;
             _outerCircle.transform.localScale = Vector3.one * _defaultState._outerScale;
@@ -38,7 +38,7 @@ namespace Game.Magic
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (Lock) return;
+            if (Lock.Value) return;
             pointerOver = true;
             DoTransition(_hoverState);
             Debug.Log("Enter");
@@ -46,7 +46,7 @@ namespace Game.Magic
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (Lock) return;
+            if (Lock.Value) return;
             pointerOver = false;
             DoTransition(_defaultState);
             Debug.Log("Exit");
@@ -54,21 +54,21 @@ namespace Game.Magic
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (Lock) return;
+            if (Lock.Value) return;
             DoTransition(_clickedState);
             Debug.Log("Down");
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (Lock) return;
+            if (Lock.Value) return;
             DoTransition(pointerOver ? _hoverState : _defaultState);
             Debug.Log("Up");
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (Lock) return;
+            if (Lock.Value) return;
             _psSummon.Play();
 			Debug.Log("Click");
         }
