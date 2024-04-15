@@ -1,6 +1,7 @@
 using TMPro;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zenject;
 
@@ -13,6 +14,7 @@ namespace Game.Battle.Character
 		public float AttackDelay => _attackDelay;
 		public float DestroyDelay => _destroyDelay;
 
+		[SerializeField] private RectTransform _statsCanvas;
 		[SerializeField] private Slider _slider;
 		[SerializeField] private TMP_Text _healthText;
 		[SerializeField] private TMP_Text _attackSpeedText;
@@ -27,6 +29,8 @@ namespace Game.Battle.Character
 
 		private CharacterModel _model;
 
+		public RectTransform StatsCanvas => _statsCanvas;
+		
 		[Inject]
 		private void Construct(CharacterModel model)
 		{
