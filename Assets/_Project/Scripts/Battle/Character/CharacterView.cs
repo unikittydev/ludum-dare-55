@@ -77,6 +77,10 @@ namespace Game.Battle.Character
 				.Join(transform.DOScale(0, _soulTransitionDuration))
 				.AppendCallback(() =>
 				{
+					_sprite.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+					_shadow.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+					_sprite.sortingOrder = topSortOrder;
+					_shadow.sortingOrder = topSortOrder - 1;
 					_statsCanvas.gameObject.SetActive(false);
 					_character.SetActive(false);
 					_soul.gameObject.SetActive(true);
@@ -91,8 +95,6 @@ namespace Game.Battle.Character
 			_soulTween = DOTween.Sequence()
 				.AppendCallback(() =>
 				{
-					_sprite.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-					_shadow.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
 					_sprite.sortingOrder = defaultSortOrder;
 					_shadow.sortingOrder = defaultSortOrder - 1;
 					_statsCanvas.gameObject.SetActive(true);
@@ -109,8 +111,6 @@ namespace Game.Battle.Character
 			_soulTween = DOTween.Sequence()
 				.AppendCallback(() =>
 				{
-					_sprite.sortingOrder = topSortOrder;
-					_shadow.sortingOrder = topSortOrder - 1;
 					_statsCanvas.gameObject.SetActive(false);
 					_soul.gameObject.SetActive(false);
 					_character.SetActive(true);
