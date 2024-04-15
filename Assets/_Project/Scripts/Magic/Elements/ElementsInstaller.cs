@@ -1,3 +1,5 @@
+using System;
+using UniOwl.Audio;
 using UnityEngine;
 using Zenject;
 
@@ -5,6 +7,13 @@ namespace Game.Magic.Elements
 {
 	public class ElementsInstaller : MonoInstaller
 	{
+		[Serializable]
+		public struct AudioData
+		{
+			public AudioCue _beginDrag;
+			public AudioCue _place;
+		}
+		
 		[SerializeField] private MagicElementView _elementPrefab;
 		[SerializeField] private MagicArrowView _arrowPrefab;
 		[Space]
@@ -15,6 +24,8 @@ namespace Game.Magic.Elements
 		[SerializeField] private LineRenderer _linkPrefab;
 		[SerializeField] private Camera _camera;
 
+		[SerializeField] private AudioData _audioData;
+		
 		public override void InstallBindings()
 		{
 			Container.BindInterfacesAndSelfTo<ElementRotationHandler>()
@@ -22,7 +33,7 @@ namespace Game.Magic.Elements
 				.WithArguments(_elementsInputMask, _rotationLine, _camera);
 			Container.BindInterfacesAndSelfTo<ElementDragHandler>()
 				.AsSingle()
-				.WithArguments(_elementsInputMask, _slotsInputMask, _camera);
+				.WithArguments(_elementsInputMask, _slotsInputMask, _camera, _audioData);
 			Container.BindInterfacesAndSelfTo<ElementsLinkHandler>()
 				.AsSingle()
 				.WithArguments(_elementsMask, _linkPrefab);

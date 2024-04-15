@@ -1,6 +1,7 @@
 using Game.Configs;
 using Game.MathUtils;
 using System.Collections.Generic;
+using UniOwl.Audio;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
@@ -19,7 +20,8 @@ namespace Game.Magic.Elements
 		[SerializeField] private Material _inCircleMaterial;
 		[SerializeField] private ElementTooltip _tooltip;
 		[SerializeField] private GameObject _tooltipObj;
-
+		[SerializeField] private AudioCue _rotateCue;
+		
 		[Inject] private MagicCircleConfig _config;
 		[Inject] private MagicElementModel _model;
 
@@ -55,11 +57,14 @@ namespace Game.Magic.Elements
 				_startRotationAxis = _startRotationAxis.GetRotated(-signedDegree);
 				_model.Rotation.Value += signedDegree;
 				transform.eulerAngles = Vector3.forward * _model.Rotation.Value;
+				
+				AudioSFXSystem.PlayCue2D(_rotateCue);
 			}
 		}
 
 		public void OnPointerEnter(PointerEventData eventData) =>
 			_tooltipObj.SetActive(true);
+		
 		public void OnPointerExit(PointerEventData eventData) =>
 			_tooltipObj?.SetActive(false);
 	}

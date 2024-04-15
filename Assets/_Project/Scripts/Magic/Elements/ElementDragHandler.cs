@@ -1,4 +1,5 @@
 using Game.Magic.View;
+using UniOwl.Audio;
 using UnityEngine;
 using Zenject;
 
@@ -14,12 +15,18 @@ namespace Game.Magic.Elements
 		private Vector2 _point;
 		private bool _enabled;
 
-		public ElementDragHandler(LayerMask elementsLayer, LayerMask slotsLayer, Camera camera)
+		private AudioCue _beginDragCue;
+		private AudioCue _placeCue;
+		
+		public ElementDragHandler(LayerMask elementsLayer, LayerMask slotsLayer, Camera camera, ElementsInstaller.AudioData _audioData)
 		{
 			_elementsInputLayer = elementsLayer;
 			_slotsInputLayer = slotsLayer;
 			_camera = camera;
 			_enabled = true;
+
+			_beginDragCue = _audioData._beginDrag;
+			_placeCue = _audioData._place;
 		}
 
 		public void Enable() => _enabled = true;
@@ -48,6 +55,8 @@ namespace Game.Magic.Elements
 				return;
 
 			_currentElement = element;
+			
+			AudioSFXSystem.PlayCue2D(_beginDragCue);
 		}
 
 		private void Drag()
@@ -72,7 +81,10 @@ namespace Game.Magic.Elements
 
 			var slot = collider.GetComponent<MagicCircleSlotView>();
 			if (slot.IsEmpty)
+			{
 				slot.Place(_currentElement.Model);
+				AudioSFXSystem.PlayCue2D(_placeCue);
+			}
 
 			_currentElement = null;
 		}
