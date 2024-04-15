@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Audio;
 
 namespace UniOwl.Audio
@@ -9,6 +10,12 @@ namespace UniOwl.Audio
         private const string musicVolume = "musicVolume";
         
         [SerializeField] private AudioMixer mixer;
+
+        private void Awake()
+        {
+            SetSFXVolume(.5f);
+            SetMusicVolume(.5f);
+        }
 
         public static float GetVolumeFromSliderValue(float value)
         {
