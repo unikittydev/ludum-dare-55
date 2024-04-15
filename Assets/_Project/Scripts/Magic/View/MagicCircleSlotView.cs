@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Game.Magic.Elements;
 using Game.Magic.Model;
 using UnityEngine;
