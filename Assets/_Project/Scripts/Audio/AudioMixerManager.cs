@@ -11,12 +11,6 @@ namespace UniOwl.Audio
         
         [SerializeField] private AudioMixer mixer;
 
-        private void Awake()
-        {
-            SetSFXVolume(.5f);
-            SetMusicVolume(.5f);
-        }
-
         public static float GetVolumeFromSliderValue(float value)
         {
             return Mathf.Log10(Mathf.Max(value, .0001f)) * 20f;

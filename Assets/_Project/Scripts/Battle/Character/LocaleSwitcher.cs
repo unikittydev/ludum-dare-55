@@ -12,14 +12,24 @@ namespace UniOwl.Localization
         {
             yield return LocalizationSettings.InitializationOperation;
 
-            currentLocaleIndex =
-                LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
+            if (StaticStatsSaver.localeIndex != -1)
+            {
+                currentLocaleIndex = StaticStatsSaver.localeIndex;
+                LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLocaleIndex];
+            }
+            else
+            {
+                currentLocaleIndex =
+                    LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
+                StaticStatsSaver.localeIndex = currentLocaleIndex;
+            }
         }
 
         public void NextLocale()
         {
             currentLocaleIndex = (currentLocaleIndex + 1) % LocalizationSettings.AvailableLocales.Locales.Count;
-
+            StaticStatsSaver.localeIndex = currentLocaleIndex;
+            
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLocaleIndex];
         }
     }

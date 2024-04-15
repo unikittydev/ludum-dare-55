@@ -41,6 +41,8 @@ namespace Game.Scoring
 			foreach (var score in _scores)
 				score.text = "...";
 
+            _nameField.SetTextWithoutNotify(StaticStatsSaver.Nickname);
+            
 			_submitButton.OnClickAsObservable()
 				.Subscribe(_ => OnClickSubmit())
 				.AddTo(_disposable);
@@ -107,6 +109,8 @@ namespace Game.Scoring
 				return;
 			if (_nameField.text.Length < 3)
 				return;
+
+			StaticStatsSaver.Nickname = _nameField.text;
 
 			_leaderboard.AddScore(_score.Score.Value, _nameField.text);
 			_forRestart.RestartGame();

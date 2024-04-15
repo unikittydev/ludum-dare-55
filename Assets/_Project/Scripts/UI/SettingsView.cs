@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.UI
 {
@@ -10,8 +11,9 @@ namespace Game.UI
         [SerializeField]
         private bool _inGame = true;
 
-        [SerializeField] private GameObject mainMenuButtons, gameMenuButtons;
-
+        [SerializeField] private GameObject gameMenuButtons;
+        [SerializeField] private Slider _musicSlider, _sfxSlider;
+        
         [SerializeField] private PanelAnimationView _panelAnimationView;
 
         private Tween _tween;
@@ -19,12 +21,28 @@ namespace Game.UI
         private void Awake()
         {
             SetInGame(_inGame);
+            
+            _musicSlider.value = StaticStatsSaver.MusicVolume;
+            _musicSlider.onValueChanged.Invoke(StaticStatsSaver.MusicVolume);
+            _sfxSlider.value = StaticStatsSaver.SfxVolume;
+            _sfxSlider.onValueChanged.Invoke(StaticStatsSaver.SfxVolume);
         }
+        
 		private void OnDisable()
 		{
             _tween?.Kill();
 		}
 
+        public void UpdateSfxVolume(float value)
+        {
+            StaticStatsSaver.SfxVolume = value;
+        }
+
+        public void UpdateMusicVolume(float value)
+        {
+            StaticStatsSaver.MusicVolume = value;
+        }
+        
 		public void SetInGame(bool value)
         {
             _inGame = value;
@@ -34,7 +52,6 @@ namespace Game.UI
                 Time.timeScale = 1f;
                 _paused = false;
             }
-            mainMenuButtons.SetActive(!_inGame);
             gameMenuButtons.SetActive(_inGame);
         }
 

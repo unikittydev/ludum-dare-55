@@ -16,6 +16,9 @@ namespace Game.Battle.Character
 		public float AttackDelay => _attackDelay;
 		public float DestroyDelay => _destroyDelay;
 
+		[SerializeField] private SpriteRenderer _sprite, _shadow;
+		[SerializeField] private int defaultSortOrder, topSortOrder;
+		
 		[SerializeField] private RectTransform _statsCanvas;
 		[SerializeField] private Slider _slider;
 		[SerializeField] private TMP_Text _healthText;
@@ -39,8 +42,12 @@ namespace Game.Battle.Character
 
 		public RectTransform StatsCanvas => _statsCanvas;
 
-		private void Awake() =>
+		private void Awake()
+		{
+			if (!_soul)
+				return;
 			_soul.gameObject.SetActive(false);
+		}
 
 		private void OnDisable()
 		{
@@ -82,8 +89,12 @@ namespace Game.Battle.Character
 		{
 			_soulTween?.Kill();
 			_soulTween = DOTween.Sequence()
-				.AppendCallback(() => 
-				{ 
+				.AppendCallback(() =>
+				{
+					_sprite.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+					_shadow.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+					_sprite.sortingOrder = defaultSortOrder;
+					_shadow.sortingOrder = defaultSortOrder - 1;
 					_statsCanvas.gameObject.SetActive(true);
 					_soul.gameObject.SetActive(false);
 					_character.SetActive(true);
@@ -98,6 +109,8 @@ namespace Game.Battle.Character
 			_soulTween = DOTween.Sequence()
 				.AppendCallback(() =>
 				{
+					_sprite.sortingOrder = topSortOrder;
+					_shadow.sortingOrder = topSortOrder - 1;
 					_statsCanvas.gameObject.SetActive(false);
 					_soul.gameObject.SetActive(false);
 					_character.SetActive(true);

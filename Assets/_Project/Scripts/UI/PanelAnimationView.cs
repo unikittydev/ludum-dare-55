@@ -11,6 +11,7 @@ namespace Game.UI
         [SerializeField] private GameObject _raycastOverlay;
 
         [SerializeField] private float _moveSpeed;
+        [SerializeField] private float topPositionY = -100f;
 
         private Tween _tween;
 
@@ -20,7 +21,7 @@ namespace Game.UI
         private void Awake()
         {
             _innerPanel.pivot = new Vector2(0.5f, 1f);
-            _innerPanel.anchoredPosition = new Vector2(0f, -100f);
+            _innerPanel.anchoredPosition = new Vector2(0f, topPositionY);
         }
 
 		private void OnDisable()
@@ -34,7 +35,7 @@ namespace Game.UI
             _outerPanel.gameObject.SetActive(true);
 
             var seq = DOTween.Sequence().Append(_innerPanel.DOPivot(new Vector2(0.5f, 0f), _moveSpeed))
-                .Join(_innerPanel.DOMoveY(100f, _moveSpeed)).AppendCallback(() =>
+                .Join(_innerPanel.DOMoveY(topPositionY, _moveSpeed)).AppendCallback(() =>
                 {
                     _raycastOverlay.SetActive(false);
                     _visible = true;
