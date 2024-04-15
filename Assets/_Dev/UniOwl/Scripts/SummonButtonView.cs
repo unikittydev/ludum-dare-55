@@ -37,7 +37,6 @@ namespace Game.Magic
             _innerCircle.color = _defaultState._innerTint;
             _outerCircle.color = _defaultState._outerTint;
             _hand.color = _defaultState._handTint;
-            
         }
 
         private void OnEnable()

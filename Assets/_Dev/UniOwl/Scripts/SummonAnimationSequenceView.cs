@@ -1,7 +1,9 @@
 using DG.Tweening;
 using Game.Magic.Elements;
 using Game.Summoning;
+using UniOwl.Audio;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Zenject;
 
 namespace Game.Magic
@@ -17,19 +19,25 @@ namespace Game.Magic
         private static readonly int _CHANNELS_OFFSET = Shader.PropertyToID("_Channels_Offset");
         
         [Header("Components")]
-        [SerializeField] private ParticleSystem _psSummon;
+        [SerializeField] private ParticleSystem _psSummonButton;
+        [SerializeField] private ParticleSystem _psSummonCircle;
         [SerializeField] private Animator _lineAnimator;
+        [SerializeField] private Physics2DRaycaster _cameraRaycaster;
         
         [Header("Aberration")]
         [SerializeField] private Material _ppAberrationMaterial;
-        [SerializeField] private Vector3 _aberrationOffset;
+        [SerializeField] private float _abberationAmplitude = .1f;
         [SerializeField] private float _aberrationDuration = .25f;
+        private Vector3 _aberrationOffset;
         
         [Header("Camera Shaking")]
         [SerializeField] private Transform _camera;
         [SerializeField] private float _cameraShakeDuration = 1f;
         [SerializeField] private float _cameraShakeStrength = 1f;
 
+        [Header("Summon")]
+        [SerializeField] private AudioCue _castCue;
+        
         [Header("Delay")]
         [SerializeField] private float _delay = 2f;
         
@@ -60,14 +68,18 @@ namespace Game.Magic
         
         public void Summon()
         {
+            _aberrationOffset = Random.onUnitSphere * _abberationAmplitude;
+            
             _tween = DOTween.Sequence()
                 // Camera shaking
                 .Join(_camera.DOShakePosition(_cameraShakeDuration, _cameraShakeStrength))
                 // Prepare
-                .JoinCallback(_psSummon.Play)
+                .JoinCallback(() => _cameraRaycaster.enabled = false)
+                .JoinCallback(_psSummonButton.Play)
                 .JoinCallback(() => _lineAnimator.Play(PLAY))
                 .JoinCallback(_drag.Disable)
                 .JoinCallback(_rotation.Disable)
+                .JoinCallback(() => AudioSFXSystem.PlayCue2D(_castCue))
                 .JoinCallback(() =>
                 {
 					foreach (var or in _circleFactory.CurrentCircle.Value.Model.Orbits)
@@ -86,6 +98,7 @@ namespace Game.Magic
                 .Join(_ppAberrationMaterial.DOVector(new Vector4(_aberrationOffset.x, _aberrationOffset.y, _aberrationOffset.z, 0f), _CHANNELS_OFFSET, _aberrationDuration))
                 // Summon
                 .JoinCallback(_provider.Summon)
+                .JoinCallback(_psSummonCircle.Play)
                 .AppendInterval(_emissionDuration)
                 // Aberration off
                 .Append(_ppAberrationMaterial.DOFloat(0f, _THRESHOLD, _aberrationDuration))
@@ -98,6 +111,7 @@ namespace Game.Magic
                 .Append(DOVirtual.Float(1f, 0f, _dissolveDuration, UpdateDissolveFactor))
                 // Cleanup
                 .AppendCallback(_drag.Enable)
+                .JoinCallback(() => _cameraRaycaster.enabled = true)
                 .JoinCallback(_rotation.Enable)
                 .JoinCallback(() => _lineAnimator.Play(STOP));
         }
