@@ -29,6 +29,8 @@ namespace Game.Battle
 		private Queue<CharacterModel> _rightSide = new();
 
 		private List<Tween> _tweens = new();
+		private CharacterModel _spawningLeft;
+		private CharacterModel _spawningRight;
 
 		private void OnDisable()
 		{
@@ -52,12 +54,13 @@ namespace Game.Battle
 		private void SpawnLeft(CharacterModel character)
 		{
 			_leftSide.Enqueue(character);
-			
+			_spawningLeft = character;
+
 			Vector2 spawnPoint = GetLeftPoint(_leftSide.Count);
 			Vector2 walkPoint = GetLeftPoint(_leftSide.Count - 1);
 
 			Vector2 circlePosition = _spawnTarget.position;
-			
+
 			character.View.transform.position = circlePosition - Vector2.up * (_showcaseScale * .5f);
 			character.View.transform.localScale = Vector3.zero;
 
@@ -68,13 +71,18 @@ namespace Game.Battle
 				.AppendInterval(_soulDuration)
 				.Append(character.View.transform.DOMove(spawnPoint, _soulMoveDuration))
 				.Append(character.View.SetLikeCharacter())
-				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+				.AppendCallback(() => 
+				{
+					character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint));
+					_spawningLeft = null;
+				}));
 		}
 
 		private void SpawnRight(CharacterModel character)
 		{
 			_rightSide.Enqueue(character);
-			
+			_spawningRight = character;
+
 			Vector2 spawnPoint = GetRightPoint(_rightSide.Count);
 			Vector2 walkPoint = GetRightPoint(_rightSide.Count - 1);
 			
@@ -84,7 +92,11 @@ namespace Game.Battle
 	
 			_tweens.Add(DOTween.Sequence()
 				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
-				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+				.AppendCallback(() =>
+				{
+					character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint));
+					_spawningRight = null;
+				}));
 		}
 
 		private void RegisterCharacter(CharacterModel character)
@@ -140,6 +152,10 @@ namespace Game.Battle
 			for (int i = 0; i < characters.Length; i++)
 			{
 				Vector2 point = left ? GetLeftPoint(i) : GetRightPoint(i);
+				if (left && _spawningLeft == characters[i])
+					continue;
+				if (!left && _spawningRight == characters[i])
+					continue;
 				characters[i].StateMachine.SwitchState(new CharacterWalkState(characters[i].StateMachine, point));
 			}
 		}
