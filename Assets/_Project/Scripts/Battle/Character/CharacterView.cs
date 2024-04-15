@@ -40,7 +40,7 @@ namespace Game.Battle.Character
 		public RectTransform StatsCanvas => _statsCanvas;
 
 		private void Awake() =>
-			_soul.gameObject.SetActive(false);
+			_soul?.gameObject.SetActive(false);
 
 		private void OnDisable()
 		{
