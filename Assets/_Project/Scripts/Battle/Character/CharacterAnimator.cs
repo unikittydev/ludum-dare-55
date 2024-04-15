@@ -1,3 +1,4 @@
+using UniOwl.Audio;
 using UnityEngine;
 
 namespace Game.Battle.Character
@@ -14,18 +15,28 @@ namespace Game.Battle.Character
 		private static readonly int DAMAGE_ANIM_SPEED = Animator.StringToHash("DAMAGE_SPEED");
 
 		[SerializeField] private Animator _animator;
-
+		[SerializeField] private AudioCue _attackCue;
+		[SerializeField] private AudioCue _deathCue;
+		
 		public void SetAttackSpeed(float speed) =>
 			_animator.SetFloat(ATTACK_ANIM_SPEED, speed);
 		public void SetDamageSpeed(float speed) =>
 			_animator.SetFloat(DAMAGE_ANIM_SPEED, speed);
 
-		public void PlayAttack() =>
+		public void PlayAttack()
+		{
 			_animator.SetTrigger(ATTACK_KEY);
+			AudioSFXSystem.PlayCue2D(_attackCue);
+		}
 		public void PlayDamage() =>
 			_animator.SetTrigger(DAMAGE_KEY);
-		public void PlayDeath() =>
+		
+		public void PlayDeath()
+		{
 			_animator.SetTrigger(DEATH_KEY);
+			AudioSFXSystem.PlayCue2D(_deathCue);
+		}
+
 		public void PlayMove(bool move) =>
 			_animator.SetBool(MOVE_KEY, move);
 	}

@@ -46,7 +46,7 @@ namespace Game.Magic.Elements
 		internal void ContinueRotating(Vector2 point)
 		{
 			var currentRotationAxis = (point - (Vector2) transform.position).normalized;
-			var degreeStep = 360f / _config.SegmentsCount;
+			var degreeStep = 360f / _config.SegmentsRotationCount;
 			var angle = Vector2.SignedAngle(_startRotationAxis, currentRotationAxis);
 			var signedDegree = Mathf.Sign(angle) * degreeStep;
 

@@ -109,6 +109,7 @@ namespace Game.Configs
 	public class MagicCircleConfig
 	{
 		public int SegmentsCount => _segmentsCount;
+		public int SegmentsRotationCount => _segmentsRotationCount;
 
 		public IReadOnlyList<OrbitConfig> Orbits => _orbits;
 
@@ -118,6 +119,7 @@ namespace Game.Configs
 		public float SlotsCountRandom => _slotsCountRandom;
 
 		[SerializeField] private int _segmentsCount = 8;
+		[SerializeField] private int _segmentsRotationCount = 8;
 		[SerializeField] private OrbitConfig[] _orbits;
 		[Space]
 		[SerializeField] private AnimationCurve _orbitsCountCurve;
