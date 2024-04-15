@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Battle;
 using Game.UI;
+using UniOwl.Audio;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -15,6 +16,7 @@ namespace _Project.Scripts.UI
 
         [SerializeField] private PanelAnimationView _leaderBoardPanel;
         [SerializeField] private SettingsView _settingsView;
+        [SerializeField] private AudioCue _finishCue;
         
         private void OnEnable()
         {
@@ -31,6 +33,7 @@ namespace _Project.Scripts.UI
             _leaderBoardPanel.ShowPanel();
             _settingsView.SetInGame(false);
             _settingsView.PauseWithoutMenu();
+            AudioSFXSystem.PlayCue2D(_finishCue);
         }
     }
 }
