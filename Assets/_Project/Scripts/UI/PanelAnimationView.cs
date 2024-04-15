@@ -49,15 +49,17 @@ namespace Game.UI
         {
             _tween?.Kill();
 
-            var seq = DOTween.Sequence().Append(_innerPanel.DOPivot(new Vector2(0.5f, 1f), _moveSpeed))
-                .Join(_innerPanel.DOMoveY(-100f, _moveSpeed)).AppendCallback(() =>
+            var seq = DOTween.Sequence()
+                .Append(_innerPanel.DOPivot(new Vector2(0.5f, 1f), _moveSpeed))
+                .Join(_innerPanel.DOMoveY(-100f, _moveSpeed))
+                .AppendCallback(() =>
                 {
                     _outerPanel.gameObject.SetActive(false);
                     _raycastOverlay.SetActive(true);
                     _visible = false;
                 }).SetUpdate(true);
             _tween = seq;
-
+            
             return seq;
         }
     }

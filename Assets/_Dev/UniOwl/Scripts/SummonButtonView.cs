@@ -3,7 +3,6 @@ using DG.Tweening;
 using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 
 namespace Game.Magic
 {

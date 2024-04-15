@@ -66,11 +66,11 @@ namespace Game.UI
         {
             if (_inGame)
                 _paused = false;
+            
             _tween?.Kill();
-            _tween = _panelAnimationView.HidePanel().AppendCallback(() =>
+            _tween = _panelAnimationView.HidePanel().JoinCallback(() =>
             {
-                if (_inGame)
-                    Time.timeScale = 1f;
+                Time.timeScale = 1f;
             });
         }
     }
