@@ -15,6 +15,9 @@ namespace Game.Battle
 		[SerializeField] private Transform _battlePoint;
 		[SerializeField] private float _distanceBetweenSides;
 		[SerializeField] private float _characterWidth;
+		
+		[Header("Spawn Animation")]
+		[SerializeField] private Transform _spawnTarget;
 		[SerializeField] private float _spawnHeight;
 		[SerializeField] private float _spawnDuration = 0.2f;
 
@@ -62,9 +65,17 @@ namespace Game.Battle
 			spawnPoint.y += _spawnHeight;
 			
 			character.View.transform.position = spawnPoint;
-			_tweens.Add(DOTween.Sequence()
-				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
-				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+			
+			// If enemy, spawn normally
+			if (!left)
+				_tweens.Add(DOTween.Sequence()
+					.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
+					.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+			// If character, spawn with 
+			else
+				_tweens.Add(DOTween.Sequence()
+					.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
+					.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
 		}
 
 		private void RegisterCharacter(CharacterModel character)
