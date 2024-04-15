@@ -20,6 +20,11 @@ namespace Game.Battle
 		[SerializeField] private Transform _spawnTarget;
 		[SerializeField] private float _spawnHeight;
 		[SerializeField] private float _spawnDuration = 0.2f;
+		[SerializeField] float _scaleTime = .4f;
+		[SerializeField] float _delay = 1.7f;
+		[SerializeField] float _moveUpTime = 1f;
+		[SerializeField] float _showcaseScale = 4f;
+		[SerializeField] int flips = 10;
 
 		private Queue<CharacterModel> _leftSide = new();
 		private Queue<CharacterModel> _rightSide = new();
@@ -35,47 +40,58 @@ namespace Game.Battle
 
 		public void SendLeftSide(CharacterModel character)
 		{
-			Spawn(character, true);
+			SpawnLeft(character);
 			RegisterCharacter(character);
 		}
 
 		public void SendRightSide(CharacterModel character) 
 		{
-			Spawn(character, false);
+			SpawnRight(character);
 			RegisterCharacter(character);
 		}
 
-		private void Spawn(CharacterModel character, bool left)
+		private void SpawnLeft(CharacterModel character)
 		{
-			Vector2 spawnPoint;
-			Vector2 walkPoint;
-			if (left)
-			{
-				_leftSide.Enqueue(character);
-				spawnPoint = GetLeftPoint(_leftSide.Count);
-				walkPoint = GetLeftPoint(_leftSide.Count - 1);
-			}
-			else
-			{
-				_rightSide.Enqueue(character);
-				spawnPoint = GetRightPoint(_rightSide.Count);
-				walkPoint = GetRightPoint(_rightSide.Count - 1);
-			}
+			_leftSide.Enqueue(character);
+			
+			Vector2 spawnPoint = GetLeftPoint(_leftSide.Count);
+			Vector2 walkPoint = GetLeftPoint(_leftSide.Count - 1);
 
+			Vector2 circlePosition = _spawnTarget.position;
+			
+			spawnPoint.y += _spawnHeight;
+			
+			character.View.transform.position = circlePosition - Vector2.up * (_showcaseScale * .5f);
+			character.View.transform.localScale = Vector3.zero;
+			
+			_tweens.Add(DOTween.Sequence()
+				.AppendCallback(() => character.View.StatsCanvas.gameObject.SetActive(false))
+				.Append(character.View.transform.DOScale(_showcaseScale, _scaleTime))
+				.AppendInterval(_delay)
+				.Append(character.View.transform.DOScale(new Vector3(0.8f, 1.2f, 1f), _moveUpTime))
+				.Join(character.View.transform.DOMoveY(spawnPoint.y, _moveUpTime))
+				.Join(character.View.transform.DORotate(new Vector3(0f, 0f, 360f * flips), _moveUpTime, RotateMode.FastBeyond360))
+				.AppendCallback(() => character.View.transform.SetPositionAndRotation(spawnPoint, Quaternion.identity))
+				.AppendCallback(() => character.View.StatsCanvas.gameObject.SetActive(true))
+				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
+				.Join(character.View.transform.DOScale(1f, _spawnDuration))
+				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+		}
+
+		private void SpawnRight(CharacterModel character)
+		{
+			_rightSide.Enqueue(character);
+			
+			Vector2 spawnPoint = GetRightPoint(_rightSide.Count);
+			Vector2 walkPoint = GetRightPoint(_rightSide.Count - 1);
+			
 			spawnPoint.y += _spawnHeight;
 			
 			character.View.transform.position = spawnPoint;
-			
-			// If enemy, spawn normally
-			if (!left)
-				_tweens.Add(DOTween.Sequence()
-					.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
-					.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
-			// If character, spawn with 
-			else
-				_tweens.Add(DOTween.Sequence()
-					.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
-					.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
+	
+			_tweens.Add(DOTween.Sequence()
+				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
+				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
 		}
 
 		private void RegisterCharacter(CharacterModel character)
