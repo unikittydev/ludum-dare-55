@@ -5,7 +5,6 @@ using Game.Configs;
 using Game.Summoning;
 using UniRx;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 public class ThemeSwitcher : MonoBehaviour
@@ -29,37 +28,15 @@ public class ThemeSwitcher : MonoBehaviour
     private void Start()
     {
         PlayStartTheme();
-        Initialize();
         
-        SceneManager.sceneLoaded += SceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        _tween?.Kill();
-        _summonCallback?.Dispose();
-        _leftSideDieCallback?.Dispose();
-    }
-
-    private void SceneLoaded(Scene scene, LoadSceneMode sceneMode)
-    {
-        Initialize();
-    }
-
-    private void Initialize()
-    {
         _count = 0;
         
-        print("init");
-
         _summonCallback?.Dispose();
         _leftSideDieCallback?.Dispose();
         
         _summonCallback = _summonProvider.OnSummon
             .Subscribe(_ =>
             {
-                print("summon");
-
                 _count++;
                 if (_count < _config.SpawnAfterPlayerSummons)
                     return;
@@ -73,7 +50,14 @@ public class ThemeSwitcher : MonoBehaviour
             StopBattleTheme();
         });
     }
-    
+
+    private void OnDisable()
+    {
+        _tween?.Kill();
+        _summonCallback?.Dispose();
+        _leftSideDieCallback?.Dispose();
+    }
+
     public void PlayStartTheme()
     {
         FadeInTheme(_startSource);
@@ -87,6 +71,21 @@ public class ThemeSwitcher : MonoBehaviour
     public void StopBattleTheme()
     {
         FadeOutTheme(_battleSource);
+    }
+
+    public Sequence FadeOutAllThemes()
+    {
+        _tween?.Kill();
+        var seq = DOTween.Sequence()
+            .Append(_battleSource.DOFade(0f, _fadeDuration))
+            .Join(_startSource.DOFade(0f, _fadeDuration))
+            .AppendCallback(() =>
+            {
+                _battleSource.Stop();
+                _startSource.Stop();
+            }).SetUpdate(true);
+        _tween = seq;
+        return seq;
     }
 
     private void FadeInTheme(AudioSource source)

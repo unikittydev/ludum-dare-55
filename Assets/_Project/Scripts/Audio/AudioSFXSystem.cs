@@ -18,14 +18,8 @@ namespace UniOwl.Audio
         {
             if (_instance == null)
                 _instance = this;
-            else if (_instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
             
             _pool = new ComponentPool<AudioSource>(audioSourcePrefab, 0);
-            DontDestroyOnLoad(this);
         }
 
         public static void PlayMusic(AudioClip clip)
