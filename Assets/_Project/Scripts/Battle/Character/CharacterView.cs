@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System;
 using TMPro;
 using UniRx;
 using UnityEngine;
@@ -26,11 +28,25 @@ namespace Game.Battle.Character
 		[SerializeField] private float _destroyDelay;
 		[SerializeField] private float _attackDelay;
 		[SerializeField] private GameObject _disableWhenDie;
+		[Space]
+		[SerializeField] private ParticleSystem _soul;
+		[SerializeField] private GameObject _character;
+		[SerializeField] private float _soulTransitionDuration;
+		[SerializeField] private float _bigCharacterTransitionDuration;
 
 		private CharacterModel _model;
+		private Tween _soulTween;
 
 		public RectTransform StatsCanvas => _statsCanvas;
-		
+
+		private void Awake() =>
+			_soul.gameObject.SetActive(false);
+
+		private void OnDisable()
+		{
+			_soulTween?.Kill();
+		}
+
 		[Inject]
 		private void Construct(CharacterModel model)
 		{
@@ -44,6 +60,50 @@ namespace Game.Battle.Character
 				.AddTo(this);
 			_model.OnDie.Subscribe(_ => OnDie())
 				.AddTo(this);
+		}
+
+		public Tween SetLikeSoul(Vector2 position)
+		{
+			_soulTween?.Kill();
+			_soulTween = DOTween.Sequence()
+				.Append(transform.DOMove(position, _soulTransitionDuration))
+				.Join(transform.DOScale(0, _soulTransitionDuration))
+				.AppendCallback(() =>
+				{
+					_statsCanvas.gameObject.SetActive(false);
+					_character.SetActive(false);
+					_soul.gameObject.SetActive(true);
+					_soul.Play();
+				});
+			return _soulTween;
+		}
+
+		public Tween SetLikeCharacter()
+		{
+			_soulTween?.Kill();
+			_soulTween = DOTween.Sequence()
+				.AppendCallback(() => 
+				{ 
+					_statsCanvas.gameObject.SetActive(true);
+					_soul.gameObject.SetActive(false);
+					_character.SetActive(true);
+				})
+				.Append(transform.DOScale(1, _soulTransitionDuration));
+			return _soulTween;
+		}
+
+		public Tween SetLikeBigCharacter(float scale)
+		{
+			_soulTween?.Kill();
+			_soulTween = DOTween.Sequence()
+				.AppendCallback(() =>
+				{
+					_statsCanvas.gameObject.SetActive(false);
+					_soul.gameObject.SetActive(false);
+					_character.SetActive(true);
+				})
+				.Append(transform.DOScale(scale, _bigCharacterTransitionDuration));
+			return _soulTween;
 		}
 
 		private void OnTakeDamage()

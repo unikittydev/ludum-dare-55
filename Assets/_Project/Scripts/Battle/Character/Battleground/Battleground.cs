@@ -19,12 +19,11 @@ namespace Game.Battle
 		[Header("Spawn Animation")]
 		[SerializeField] private Transform _spawnTarget;
 		[SerializeField] private float _spawnHeight;
+		[SerializeField] private float _showcaseScale = 4f;
+		[SerializeField] private float _showcaseDuration = 0.5f;
+		[SerializeField] private float _soulDuration = 0.3f;
+		[SerializeField] private float _soulMoveDuration = 1.5f;
 		[SerializeField] private float _spawnDuration = 0.2f;
-		[SerializeField] float _scaleTime = .4f;
-		[SerializeField] float _delay = 1.7f;
-		[SerializeField] float _moveUpTime = 1f;
-		[SerializeField] float _showcaseScale = 4f;
-		[SerializeField] int flips = 10;
 
 		private Queue<CharacterModel> _leftSide = new();
 		private Queue<CharacterModel> _rightSide = new();
@@ -59,22 +58,16 @@ namespace Game.Battle
 
 			Vector2 circlePosition = _spawnTarget.position;
 			
-			spawnPoint.y += _spawnHeight;
-			
 			character.View.transform.position = circlePosition - Vector2.up * (_showcaseScale * .5f);
 			character.View.transform.localScale = Vector3.zero;
-			
+
 			_tweens.Add(DOTween.Sequence()
-				.AppendCallback(() => character.View.StatsCanvas.gameObject.SetActive(false))
-				.Append(character.View.transform.DOScale(_showcaseScale, _scaleTime))
-				.AppendInterval(_delay)
-				.Append(character.View.transform.DOScale(new Vector3(0.8f, 1.2f, 1f), _moveUpTime))
-				.Join(character.View.transform.DOMoveY(spawnPoint.y, _moveUpTime))
-				.Join(character.View.transform.DORotate(new Vector3(0f, 0f, 360f * flips), _moveUpTime, RotateMode.FastBeyond360))
-				.AppendCallback(() => character.View.transform.SetPositionAndRotation(spawnPoint, Quaternion.identity))
-				.AppendCallback(() => character.View.StatsCanvas.gameObject.SetActive(true))
-				.Append(character.View.transform.DOMoveY(_battlePoint.position.y, _spawnDuration))
-				.Join(character.View.transform.DOScale(1f, _spawnDuration))
+				.Append(character.View.SetLikeBigCharacter(_showcaseScale))
+				.AppendInterval(_showcaseDuration)
+				.Append(character.View.SetLikeSoul(circlePosition))
+				.AppendInterval(_soulDuration)
+				.Append(character.View.transform.DOMove(spawnPoint, _soulMoveDuration))
+				.Append(character.View.SetLikeCharacter())
 				.AppendCallback(() => character.StateMachine.SwitchState(new CharacterWalkState(character.StateMachine, walkPoint))));
 		}
 
