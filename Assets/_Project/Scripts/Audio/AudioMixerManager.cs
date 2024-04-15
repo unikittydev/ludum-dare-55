@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Audio;
 
 namespace UniOwl.Audio
@@ -11,7 +10,13 @@ namespace UniOwl.Audio
         
         [SerializeField] private AudioMixer mixer;
 
-        public static float GetVolumeFromSliderValue(float value)
+		private void Start()
+		{
+            SetSFXVolume(StaticStatsSaver.SfxVolume);
+            SetMusicVolume(StaticStatsSaver.MusicVolume);
+		}
+
+		public static float GetVolumeFromSliderValue(float value)
         {
             return Mathf.Log10(Mathf.Max(value, .0001f)) * 20f;
         }

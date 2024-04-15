@@ -23,9 +23,7 @@ namespace Game.UI
             SetInGame(_inGame);
             
             _musicSlider.value = StaticStatsSaver.MusicVolume;
-            _musicSlider.onValueChanged.Invoke(StaticStatsSaver.MusicVolume);
             _sfxSlider.value = StaticStatsSaver.SfxVolume;
-            _sfxSlider.onValueChanged.Invoke(StaticStatsSaver.SfxVolume);
         }
         
 		private void OnDisable()
