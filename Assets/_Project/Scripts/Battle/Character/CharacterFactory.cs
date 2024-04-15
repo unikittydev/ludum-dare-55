@@ -6,7 +6,7 @@ namespace Game.Battle.Character
 	{
 		[Inject] private DiContainer _di;
 
-		public CharacterModel Create(CharacterView prefab, int health, int damage, float attackSpeed)
+		public CharacterModel Create(CharacterView prefab, float health, float damage, float attackSpeed)
 		{
 			var model = new CharacterModel(health, damage, attackSpeed);
 			var view = _di.InstantiatePrefabForComponent<CharacterView>(prefab, new object[] { model });

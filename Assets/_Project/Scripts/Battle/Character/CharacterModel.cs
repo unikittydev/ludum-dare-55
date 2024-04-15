@@ -13,26 +13,26 @@ namespace Game.Battle.Character
 		public ReactiveCommand OnDie = new();
 		public ReactiveCommand OnTakeDamage = new();
 
-		public IReadOnlyReactiveProperty<int> Health => _health;
-		public int MaxHealth => _maxHealth;
+		public IReadOnlyReactiveProperty<float> Health => _health;
+		public float MaxHealth => _maxHealth;
 
-		public int Damage => _damage;
+		public float Damage => _damage;
 		public float AttackSpeed => _attackSpeed;
 
-		private ReactiveProperty<int> _health;
-		private int _maxHealth;
-		private int _damage;
+		private ReactiveProperty<float> _health;
+		private float _maxHealth;
+		private float _damage;
 		private float _attackSpeed;
 
-		public CharacterModel(int health, int damage, float attackSpeed)
+		public CharacterModel(float health, float damage, float attackSpeed)
 		{
-			_health = new ReactiveProperty<int>(health);
+			_health = new ReactiveProperty<float>(health);
 			_maxHealth = health;
 			_damage = damage;
 			_attackSpeed = attackSpeed;
 		}
 
-		public void TakeDamage(int damage, float speed)
+		public void TakeDamage(float damage, float speed)
 		{
 			View?.Animator.SetDamageSpeed(speed);
 			_health.Value = Mathf.Max(0, _health.Value - damage);

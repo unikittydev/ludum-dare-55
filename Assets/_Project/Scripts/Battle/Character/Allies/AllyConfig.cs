@@ -19,16 +19,16 @@ namespace Game.Battle.Character.Allies
 
         public AllySummonCondition Condition => _condition;
 
-        public int BaseHealth => _baseHealth;
-        public int BaseDamage => _baseDamage;
+        public float BaseHealth => _baseHealth;
+        public float BaseDamage => _baseDamage;
         public float BaseAttackSpeed => _baseAttackSpeed;
 
         [SerializeField] private CharacterView _prefab;
         [Space]
         [SerializeField] private AllySummonCondition _condition;
         [Space]
-        [SerializeField] private int _baseHealth;
-        [SerializeField] private int _baseDamage;
+        [SerializeField] private float _baseHealth;
+        [SerializeField] private float _baseDamage;
         [SerializeField] private float _baseAttackSpeed;
     }
 }

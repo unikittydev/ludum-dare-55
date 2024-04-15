@@ -15,17 +15,17 @@ namespace Game.Battle.Character.Allies
 
 		public void Create(MagicElementModel[] elements)
 		{
-			int hp = 0;
-			int dmg = 0;
+			float hp = 0;
+			float dmg = 0;
 			float atkSpeed = 0;
 			foreach (var el in elements)
 			{
 				foreach (var influence in el.Config.Influences)
 				{
 					if (influence.Parameter == EElementParam.Health)
-						hp += (int) influence.Value;
+						hp += influence.Value;
 					else if (influence.Parameter == EElementParam.Damage)
-						dmg += (int) influence.Value;
+						dmg += influence.Value;
 					else
 						atkSpeed += influence.Value;
 				}
@@ -49,7 +49,7 @@ namespace Game.Battle.Character.Allies
 			Spawn(_allies.Allies[0], hp, dmg, atkSpeed);
 		}
 
-		private void Spawn(AllyConfig config, int hp, int dmg, float atkSpeed)
+		private void Spawn(AllyConfig config, float hp, float dmg, float atkSpeed)
 		{
 			hp += (int) (config.BaseHealth * _allies.BaseHealthMultiplierCurve.Evaluate(_score.Score.Value));
 			dmg += (int) (config.BaseDamage * _allies.BaseDamageMultiplierCurve.Evaluate(_score.Score.Value));

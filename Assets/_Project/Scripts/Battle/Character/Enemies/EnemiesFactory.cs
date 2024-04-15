@@ -17,8 +17,8 @@ namespace Game.Battle.Character.Enemies
 			var hp = _difficulty.GetEnemyHealth();
 			var dmg = _difficulty.GetEnemyDamage();
 			var enemy = _factory.Create(config.Prefab, 
-				(int) (hp * config.HealthMultiplier), 
-				(int) (dmg * config.DamageMultiplier), 
+				hp * config.HealthMultiplier, 
+				dmg * config.DamageMultiplier, 
 				atkSpeed * config.AttackSpeedMultiplier);
 			enemy.ScoreByKill = (int) config.ScoreByKillCurve.Evaluate(_score.Score.Value); 
 			_battle.SendRightSide(enemy);
