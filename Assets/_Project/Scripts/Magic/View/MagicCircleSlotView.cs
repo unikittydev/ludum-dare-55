@@ -1,4 +1,3 @@
-using DG.Tweening;
 using Game.Magic.Elements;
 using Game.Magic.Model;
 using UnityEngine;
@@ -33,7 +32,8 @@ namespace Game.Magic.View
             element.View.transform.SetParent(transform);
             element.View.transform.position = _slot.View.transform.position;
 
-            _slot.Element.Value = element;
+            _slot.Element.SetValueAndForceNotify(element);
+            _slot.Element.Value.Rotation.Value = 0;
         }
     }
 }
